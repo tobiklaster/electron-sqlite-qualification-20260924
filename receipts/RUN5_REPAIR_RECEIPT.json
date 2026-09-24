@@ -1,0 +1,87 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_RUN_REPAIR_RECEIPT_V1",
+  "status": "RUN5_CURRENTNESS_HOLD__NATIVE_ASAR_LAYOUT_DISCOVERY_REPAIRED__RERUN_REQUIRED",
+  "run5": {
+    "workflow_run_id": 36069966455,
+    "head_sha": "f64d6cd1d70c9b652877bbf46a1b258d89bed210",
+    "job_id": 107868375613,
+    "job_conclusion": "success",
+    "artifact_id": 10837971680,
+    "artifact_outer_sha256": "d270acd4ad8f4eb64dfcec89c02b769c06aa20434b7ec268a454623d622d511e",
+    "inner_result_zip_sha256": "bf80770ff0015445e3ccb3f892d8c0622f7ea5673f2ffb7f5025929335b478b0",
+    "runner_preflight": {
+      "result": "PASS",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "x86_64",
+      "root_filesystem": "ext4",
+      "workspace_filesystem": "ext4",
+      "runner_temp_filesystem": "ext4",
+      "label": "ubuntu-24.04",
+      "image_os": "ubuntu24",
+      "image_version": "20260920.314.1",
+      "runner_version": "2.337.0"
+    },
+    "currentness": {
+      "control_vite_5_4_19": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "candidate_A_vite_8_3_1": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "candidate_B_vite_7_3_6": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "preferred_candidate": null,
+      "disposition": "HOLD_CURRENTNESS",
+      "q01_q10": "NOT_EXECUTED"
+    },
+    "dev_runtime_identity": {
+      "electron": "44.4.4",
+      "embedded_node": "24.21.0",
+      "chromium": "152.0.7977.130",
+      "sqlite": "3.53.4",
+      "native_binding_loaded": true,
+      "renderer_ready": true
+    },
+    "pass_claimed": false
+  },
+  "exact_discriminator": "All three Vite lines pass dev runtime and Forge packaging, then fail specifically at native_asar_layout_discovery because no physical .node is proven in the packaged app tree. No Vite-major incompatibility is inferred.",
+  "public_reference_basis": {
+    "electron_packager": "Current Electron Packager usage documents asar unpack/unpackDir and states that native .node modules are unpacked to app.asar.unpacked; unpackDir is relative to the source directory.",
+    "electron_asar": "Electron ASAR documentation states native/shared-library files may be left unpacked and shipped in app.asar.unpacked."
+  },
+  "bounded_repairs": [
+    {
+      "path": "forge.config.cjs",
+      "commit": "8a5bd0a956cb89869a937c758c29fb6c7dcf552a",
+      "effect": "Use explicit asar.unpackDir=node_modules/better-sqlite3 rather than a generic .node glob."
+    },
+    {
+      "path": "scripts/qualify.sh",
+      "commit": "97a0e6863ae6a043893b733a95296977da6bf0bf",
+      "effect": "Require the packaged native .node to exist physically under resources/app.asar.unpacked and hash both the native file and app.asar before packaged launch."
+    },
+    {
+      "path": "scripts/write-q01-q03.cjs",
+      "commit": "0c9375fe8e999334d1d6dcfaa750227ae108e17e",
+      "effect": "Make Q03 fail closed unless app.asar.unpacked native proof is explicit in the receipt."
+    }
+  ],
+  "scope_preserved": {
+    "runner": "ubuntu-24.04",
+    "currentness_control": "vite@5.4.19",
+    "candidate_A": "vite@8.3.1",
+    "candidate_B": "vite@7.3.6",
+    "selection_rule": "UNCHANGED",
+    "q01_q10": "UNCHANGED",
+    "public_synthetic_only": true,
+    "no_product_repository": true,
+    "zero_spend": true,
+    "no_vite_adoption": true,
+    "no_build_authority": true,
+    "formal_effect_created": false
+  }
+}
