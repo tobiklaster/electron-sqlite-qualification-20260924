@@ -1,0 +1,15 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_PUBLICATION_SCOPE_V1",
+  "classification": "PUBLIC_SYNTHETIC_QUALIFICATION_ONLY",
+  "product_code": false,
+  "product_repository_dependency": false,
+  "private_project_sources": false,
+  "private_schema_or_migration_corpus": false,
+  "personal_or_user_data": false,
+  "credentials_or_secrets": false,
+  "private_provenance": false,
+  "runner": "ubuntu-24.04",
+  "execution_cost_target_usd": 0,
+  "workflow_trigger": "workflow_dispatch_only",
+  "claim_ceiling": "ACTIVE_DEVELOPMENT_CONFIGURATION = UBUNTU_24_04_X64_EXT4__QUALIFIED"
+}
