@@ -1,7 +1,7 @@
 const { VitePlugin } = require('@electron-forge/plugin-vite');
 module.exports = {
   packagerConfig: {
-    asar: { unpack: '**/{.**,**}/**/*.node' }
+    asar: { unpackDir: 'node_modules/better-sqlite3' }
   },
   rebuildConfig: {},
   plugins: [
