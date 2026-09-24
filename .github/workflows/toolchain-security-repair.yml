@@ -3,10 +3,25 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: bs01-toolchain-security-repair
+  cancel-in-progress: false
 jobs:
   qualify:
     runs-on: ubuntu-24.04
+    timeout-minutes: 90
     steps:
-      - name: Run authorized public synthetic repair
+      - name: Checkout exact public repository commit without third-party action
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+      - name: Exact Ubuntu 24.04 x64 ext4 runner preflight
+        shell: bash
+        run: bash scripts/preflight.sh
+      - name: Fresh lock security repair and bounded Q01-Q03
         shell: bash
         run: bash security-repair/run-security-repair.sh
