@@ -76,6 +76,17 @@ probe_inner() {
   prepare_suid_sandbox "$packaged_sandbox" || return 1
 
   PROBE_STAGE="native_asar_layout_discovery"
+  {
+    echo "APPDIR=$appdir"
+    echo "RESOURCES_TREE"
+    find "$appdir/resources" -maxdepth 8 -type f -printf '%P\n' 2>/dev/null | sort || true
+    echo "NATIVE_FILES"
+    find "$appdir" -type f -name '*.node' -printf '%P\n' 2>/dev/null | sort || true
+    if [[ -x "./node_modules/.bin/asar" && -f "$appdir/resources/app.asar" ]]; then
+      echo "ASAR_NATIVE_ENTRIES"
+      ./node_modules/.bin/asar list "$appdir/resources/app.asar" 2>/dev/null | grep -E '\\.node$|better-sqlite3' || true
+    fi
+  } > "$dir/package-layout.txt"
   native="$(find "$appdir" -type f -name '*.node' | head -n1)"
   [[ -n "$native" && -f "$native" ]] || return 1
   [[ "$native" == "$appdir/resources/app.asar.unpacked/"* ]] || return 1
