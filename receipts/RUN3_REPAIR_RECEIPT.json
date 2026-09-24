@@ -1,0 +1,88 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_RUN_REPAIR_RECEIPT_V1",
+  "status": "RUN3_CURRENTNESS_HOLD__NATIVE_EXTERNALIZATION_AND_RECEIPT_READBACK_REPAIRED__RERUN_REQUIRED",
+  "run3": {
+    "workflow_run_id": 36069034574,
+    "head_sha": "c8b26f8c6efdb77b0ba6c37d22b24c6ac6a5207a",
+    "job_id": 107865408717,
+    "job_conclusion": "success",
+    "artifact_id": 10837477720,
+    "artifact_outer_sha256": "527ebe3f5fe00322078609dd0a0766b7b298c683fa8f4a1c9ff91500d7ac2ea6",
+    "inner_result_zip_sha256": "d4b413c3b75f9daa48de9bad318a4ce85e215a4b72bc31b1db095721712e4e4c",
+    "runner_preflight": {
+      "result": "PASS",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "x86_64",
+      "root_filesystem": "ext4",
+      "workspace_filesystem": "ext4",
+      "runner_temp_filesystem": "ext4",
+      "label": "ubuntu-24.04",
+      "image_os": "ubuntu24",
+      "image_version": "20260920.314.1",
+      "runner_version": "2.337.0"
+    },
+    "runtime_identity_observed_for_all_three_lines": {
+      "electron": "44.4.4",
+      "embedded_node": "24.21.0",
+      "chromium": "152.0.7977.130",
+      "sqlite": "3.53.4"
+    },
+    "lock_evidence": {
+      "control_5_4_19": {
+        "lock_sha256": "e41a8d024b09d91316ac5a6e5dcfe55e969c792d424e052cdf1437af6d53389e",
+        "graph_sha256": "551a6ec59be0eaca4eb1355d38c9a0bf569c2524301a0f8db656bd6ee0d8bc69",
+        "packages": 548
+      },
+      "candidate_A_8_3_1": {
+        "lock_sha256": "b884fc61236426a9fdd2262c2702ecf3ea9e42a8bbedbecf68b427e124a3d3d0",
+        "graph_sha256": "0493c624d70fb1412285db157850eb64d70104b92422f1615ee31de82a14a939",
+        "packages": 531
+      },
+      "candidate_B_7_3_6": {
+        "lock_sha256": "f2d3bde6b0921920967578c3e41e7947674727002bb5dec879c61a52301c48f7",
+        "graph_sha256": "73fb06c26a8984e3f80cf8f956da70a6e14de8e932974a3551b86cd3105e2b0c",
+        "packages": 556
+      }
+    },
+    "currentness": {
+      "control_vite_5_4_19": "FAIL",
+      "candidate_A_vite_8_3_1": "FAIL",
+      "candidate_B_vite_7_3_6": "FAIL",
+      "preferred_candidate": null,
+      "disposition": "HOLD_CURRENTNESS",
+      "q01_q10": "NOT_EXECUTED"
+    },
+    "pass_claimed": false
+  },
+  "exact_discriminators": [
+    "Main-process Vite bundling included better-sqlite3 instead of externalizing it as a native runtime dependency. The bundled loader then searched .vite/build/Release/better_sqlite3.node, which is not the correct runtime dependency location.",
+    "The post-launch receipt verifier prefixed an already-absolute receipt path with './', producing MODULE_NOT_FOUND even when a receipt file existed.",
+    "The same native-resolution defect was observed across control Vite 5.4.19, candidate A Vite 8.3.1, and candidate B Vite 7.3.6; therefore no Vite-major incompatibility is inferred."
+  ],
+  "bounded_repairs": [
+    {
+      "path": "vite.main.config.mjs",
+      "commit": "268e4a88c3bb173826e47e007ab532b173d6ca08",
+      "effect": "Externalize better-sqlite3 from the Electron main-process Vite bundle while keeping all exact dependency versions and tests unchanged."
+    },
+    {
+      "path": "scripts/qualify.sh",
+      "commit": "f2c76051968eb0bd0d6a5f226bcf4de61a88c6d3",
+      "effect": "Read absolute runtime receipt paths via fs.readFileSync instead of malformed relative require paths."
+    }
+  ],
+  "scope_preserved": {
+    "currentness_control": "vite@5.4.19",
+    "candidate_A": "vite@8.3.1",
+    "candidate_B": "vite@7.3.6",
+    "q01_q10": "UNCHANGED",
+    "selection_rule": "UNCHANGED",
+    "runner": "ubuntu-24.04",
+    "public_synthetic_only": true,
+    "no_product_repository": true,
+    "zero_spend": true,
+    "no_vite_adoption": true,
+    "no_build_authority": true,
+    "formal_effect_created": false
+  }
+}
