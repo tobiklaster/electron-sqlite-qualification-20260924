@@ -1,0 +1,23 @@
+{
+  "name": "electron-sqlite-security-repair-qualification",
+  "version": "0.0.0-qualification",
+  "private": true,
+  "packageManager": "npm@11.19.0",
+  "main": ".vite/build/main.js",
+  "scripts": {},
+  "dependencies": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "better-sqlite3": "13.0.3"
+  },
+  "devDependencies": {
+    "electron": "44.4.4",
+    "@electron-forge/cli": "7.11.2",
+    "@electron-forge/plugin-vite": "7.11.2",
+    "vite": "8.3.1",
+    "typescript": "7.0.2"
+  },
+  "overrides": {
+    "@electron/rebuild": "4.2.0"
+  }
+}
