@@ -1,0 +1,89 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_RUN_REPAIR_RECEIPT_V1",
+  "status": "RUN6_CURRENTNESS_HOLD__FORGE_VITE_RUNTIME_DEPENDENCY_STAGING_REPAIRED__RERUN_REQUIRED",
+  "run6": {
+    "workflow_run_id": 36070344580,
+    "head_sha": "35e1beaa6c7c5d333f7d2f7c97516c895e718c73",
+    "job_id": 107869595920,
+    "job_conclusion": "success",
+    "artifact_id": 10838335886,
+    "artifact_outer_sha256": "6dbc43f68996fdd983772605ff0c2d9768a73aa3080382110cb7c23e41823c12",
+    "inner_result_zip_sha256": "cf2c844f4739d810de7c3cf4c70758c24bc7d04d669cc85d0f7232fb4c7aa94f",
+    "runner_preflight": {
+      "result": "PASS",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "x86_64",
+      "root_filesystem": "ext4",
+      "workspace_filesystem": "ext4",
+      "runner_temp_filesystem": "ext4",
+      "label": "ubuntu-24.04",
+      "image_os": "ubuntu24",
+      "image_version": "20260920.314.1",
+      "runner_version": "2.337.0"
+    },
+    "currentness": {
+      "control_vite_5_4_19": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "candidate_A_vite_8_3_1": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "candidate_B_vite_7_3_6": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "preferred_candidate": null,
+      "disposition": "HOLD_CURRENTNESS",
+      "q01_q10": "NOT_EXECUTED"
+    },
+    "dev_runtime_identity": {
+      "electron": "44.4.4",
+      "embedded_node": "24.21.0",
+      "chromium": "152.0.7977.130",
+      "sqlite": "3.53.4",
+      "native_binding_loaded": true,
+      "renderer_ready": true
+    },
+    "lock_evidence": {
+      "control_5_4_19": {
+        "lock_sha256": "e41a8d024b09d91316ac5a6e5dcfe55e969c792d424e052cdf1437af6d53389e",
+        "graph_sha256": "551a6ec59be0eaca4eb1355d38c9a0bf569c2524301a0f8db656bd6ee0d8bc69"
+      },
+      "candidate_A_8_3_1": {
+        "lock_sha256": "b884fc61236426a9fdd2262c2702ecf3ea9e42a8bbedbecf68b427e124a3d3d0",
+        "graph_sha256": "0493c624d70fb1412285db157850eb64d70104b92422f1615ee31de82a14a939"
+      },
+      "candidate_B_7_3_6": {
+        "lock_sha256": "f2d3bde6b0921920967578c3e41e7947674727002bb5dec879c61a52301c48f7",
+        "graph_sha256": "73fb06c26a8984e3f80cf8f956da70a6e14de8e932974a3551b86cd3105e2b0"
+      }
+    },
+    "pass_claimed": false
+  },
+  "exact_discriminator": "All three Vite lines again pass clean lock/npm-ci/dev runtime/native load and Forge packaging, then fail specifically at native_asar_layout_discovery. Explicit unpackDir alone did not preserve a physical packaged native binding. Upstream Forge/Vite evidence identifies package-staging exclusion of runtime node_modules as a relevant known failure mode in Forge versions above 7.3.1.",
+  "bounded_repair": {
+    "path": "forge.config.cjs",
+    "commit": "dbb6162b33c8cc16de82b431144ac41a134a8b85",
+    "effect": "Preserve package.json, .vite and runtime node_modules through Forge Packager staging with prune=true; use asar=true so Electron Packager applies its native-node default unpack behavior. Q03 still requires physical .node proof under resources/app.asar.unpacked."
+  },
+  "source_basis": [
+    "https://github.com/electron/forge/issues/3934",
+    "https://github.com/electron/packager/blob/main/usage.txt"
+  ],
+  "scope_preserved": {
+    "runner": "ubuntu-24.04",
+    "currentness_control": "vite@5.4.19",
+    "candidate_A": "vite@8.3.1",
+    "candidate_B": "vite@7.3.6",
+    "selection_rule": "UNCHANGED",
+    "q01_q10": "UNCHANGED",
+    "public_synthetic_only": true,
+    "no_product_repository": true,
+    "zero_spend": true,
+    "no_vite_adoption": true,
+    "no_build_authority": true,
+    "formal_effect_created": false
+  }
+}
