@@ -1,7 +1,7 @@
 const { VitePlugin } = require('@electron-forge/plugin-vite');
 module.exports = {
   packagerConfig: {
-    asar: { unpack: '**/*.node' }
+    asar: { unpack: '**/{.**,**}/**/*.node' }
   },
   rebuildConfig: {},
   plugins: [
