@@ -53,7 +53,7 @@ probe_inner() {
 
   prepare_suid_sandbox "node_modules/electron/dist/chrome-sandbox" || return 1
   QUAL_PHASE="$name-dev" QUAL_RUNTIME_RECEIPT="$dir/dev-runtime.json" timeout 120s xvfb-run -a ./node_modules/.bin/electron-forge start || return 1
-  node -e "const r=require('./$dir/dev-runtime.json'); if(r.result!=='PASS'||!r.native_binding_loaded||!r.renderer_ready) process.exit(1)" || return 1
+  node -e "const fs=require('fs'); const r=JSON.parse(fs.readFileSync(process.argv[1],'utf8')); if(r.result!=='PASS'||!r.native_binding_loaded||!r.renderer_ready) process.exit(1)" "$dir/dev-runtime.json" || return 1
 
   rm -rf out
   ./node_modules/.bin/electron-forge package || return 1
@@ -70,7 +70,7 @@ probe_inner() {
   native_sha="$(sha256sum "$native" | awk '{print $1}')"
 
   QUAL_PHASE="$name-packaged" QUAL_RUNTIME_RECEIPT="$dir/packaged-runtime.json" timeout 90s xvfb-run -a "$appbin" || return 1
-  node -e "const r=require('./$dir/packaged-runtime.json'); if(r.result!=='PASS'||!r.native_binding_loaded||!r.renderer_ready||!r.sqlite_version) process.exit(1)" || return 1
+  node -e "const fs=require('fs'); const r=JSON.parse(fs.readFileSync(process.argv[1],'utf8')); if(r.result!=='PASS'||!r.native_binding_loaded||!r.renderer_ready||!r.sqlite_version) process.exit(1)" "$dir/packaged-runtime.json" || return 1
 
   mv "$native" "$native.missing"
   set +e
