@@ -9,6 +9,61 @@ NPM_PREFIX="$RUNNER_TEMP/npm11-security-repair"
 rm -rf "$RESULTS" "$WORK" "$NPM_PREFIX"
 mkdir -p "$RESULTS" "$WORK" "$NPM_PREFIX"
 
+finalize_artifact() {
+  cp "$ROOT/.qualification/results/RUNNER_PREFLIGHT.json" "$RESULTS/RUNNER_PREFLIGHT.json" 2>/dev/null || true
+  python3 - "$RESULTS" <<'PY'
+from pathlib import Path
+import hashlib,json,sys,zipfile,os
+root=Path(sys.argv[1])
+members=[]
+for p in sorted(root.rglob('*')):
+    if p.is_file() and p.name not in ('MANIFEST.json','toolchain-security-repair-result.zip'):
+        b=p.read_bytes()
+        members.append({'path':p.relative_to(root).as_posix(),'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})
+manifest={
+  'schema':'ENGOS_PUBLIC_SYNTHETIC_TOOLCHAIN_SECURITY_REPAIR_RESULT_MANIFEST_V1',
+  'github_repository':os.environ.get('GITHUB_REPOSITORY'),
+  'github_sha':os.environ.get('GITHUB_SHA'),
+  'runner_name':os.environ.get('RUNNER_NAME'),
+  'runner_os':os.environ.get('RUNNER_OS'),
+  'runner_arch':os.environ.get('RUNNER_ARCH'),
+  'members':members,
+  'semantic_ceiling':'QUALIFICATION_EVIDENCE_ONLY__NO_BASELINE_ADOPTION',
+  'product_repository_write':False,
+  'bs01_build':False,
+  'qg_effect':False,
+  'formal_effect':False
+}
+(root/'MANIFEST.json').write_text(json.dumps(manifest,indent=2)+'\n')
+zip_path=root/'toolchain-security-repair-result.zip'
+with zipfile.ZipFile(zip_path,'w',zipfile.ZIP_DEFLATED) as z:
+    for p in sorted(root.rglob('*')):
+        if p.is_file() and p != zip_path:
+            z.write(p,p.relative_to(root))
+print('SECURITY_REPAIR_RESULT_ZIP_SHA256='+hashlib.sha256(zip_path.read_bytes()).hexdigest())
+PY
+}
+
+resolution_hold() {
+  local stage="$1" rc="$2"
+  node - "$RESULTS/final-status.json" "$stage" "$rc" <<'NODE'
+const fs=require('fs');
+fs.writeFileSync(process.argv[2],JSON.stringify({
+  result:'HOLD_FRESH_RESOLUTION_OR_INSTALL',
+  failure_stage:process.argv[3],
+  exit_code:Number(process.argv[4]),
+  q01_q03:'NOT_EXECUTED',
+  baseline_adoption:false,
+  product_repository_write:false,
+  bs01_build:false,
+  qg_effect:false,
+  formal_effect:false
+},null,2)+'\n');
+NODE
+  finalize_artifact
+  exit 0
+}
+
 cp "$ROOT/security-repair/package-template.json" "$WORK/package.json"
 cp "$ROOT/index.html" "$ROOT/types.d.ts" "$ROOT/tsconfig.json" "$ROOT/forge.config.cjs" "$WORK/"
 cp "$ROOT/vite.main.config.mjs" "$ROOT/vite.preload.config.mjs" "$ROOT/vite.renderer.config.mjs" "$WORK/"
@@ -44,7 +99,11 @@ NODE
 cd "$WORK"
 
 # Completely fresh lock materialization.
-"$NPM" install --package-lock-only --ignore-scripts=false --no-audit --no-fund
+set +e
+"$NPM" install --package-lock-only --ignore-scripts=false --no-audit --no-fund > "$RESULTS/fresh-lock-pass1.log" 2>&1
+LOCK1_RC=$?
+set -e
+[[ "$LOCK1_RC" -eq 0 ]] || resolution_hold "fresh_lock_pass1" "$LOCK1_RC"
 node - <<'NODE'
 const fs=require('fs');
 const p=JSON.parse(fs.readFileSync('package.json','utf8'));
@@ -52,13 +111,21 @@ p.allowScripts={'better-sqlite3@13.0.3':true};
 fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');
 NODE
 rm -f package-lock.json
-"$NPM" install --package-lock-only --ignore-scripts=false --no-audit --no-fund
+set +e
+"$NPM" install --package-lock-only --ignore-scripts=false --no-audit --no-fund > "$RESULTS/fresh-lock-pass2.log" 2>&1
+LOCK2_RC=$?
+set -e
+[[ "$LOCK2_RC" -eq 0 ]] || resolution_hold "fresh_lock_pass2" "$LOCK2_RC"
 cp package.json "$RESULTS/exact-package.json"
 cp package-lock.json "$RESULTS/fresh-package-lock.json"
 
 # Clean install from the exact fresh lock.
 rm -rf node_modules
-"$NPM" ci --ignore-scripts=false --no-audit --no-fund
+set +e
+"$NPM" ci --ignore-scripts=false --no-audit --no-fund > "$RESULTS/npm-ci.log" 2>&1
+NPM_CI_RC=$?
+set -e
+[[ "$NPM_CI_RC" -eq 0 ]] || resolution_hold "npm_ci" "$NPM_CI_RC"
 
 # Electron binary is materialized explicitly; Forge then uses the resolved rebuild provider.
 ./node_modules/.bin/install-electron --no
@@ -68,7 +135,7 @@ rm -rf node_modules
 set +e
 "$NPM" ls @electron/rebuild tar --all > "$RESULTS/npm-ls.txt" 2>&1
 NPM_LS_RC=$?
-"$NPM" ls @electron/rebuild tar --all --json > "$RESULTS/npm-ls.json" 2>&1
+"$NPM" ls @electron/rebuild tar --all --json > "$RESULTS/npm-ls.json" 2> "$RESULTS/npm-ls-json.stderr.txt"
 NPM_LS_JSON_RC=$?
 set -e
 node - "$RESULTS/npm-ls-status.json" "$NPM_LS_RC" "$NPM_LS_JSON_RC" <<'NODE'
