@@ -87,8 +87,11 @@ probe_inner() {
       ./node_modules/.bin/asar list "$appdir/resources/app.asar" 2>/dev/null | grep -E '\\.node$|better-sqlite3' || true
     fi
   } > "$dir/package-layout.txt"
-  native="$(find "$appdir" -type f -name '*.node' | head -n1)"
-  [[ -n "$native" && -f "$native" ]] || return 1
+  # This qualification row is already preflight-bound to Linux x64.
+  # Target the exact runtime prebuild used by better-sqlite3 on this row;
+  # never remove an arbitrary foreign-platform .node for the negative test.
+  native="$appdir/resources/app.asar.unpacked/node_modules/better-sqlite3/prebuilds/linux-x64.node"
+  [[ -f "$native" ]] || return 1
   [[ "$native" == "$appdir/resources/app.asar.unpacked/"* ]] || return 1
   local asar_file="$appdir/resources/app.asar"
   [[ -f "$asar_file" ]] || return 1
@@ -123,6 +126,9 @@ fs.writeFileSync(path.join(dir,'probe-details.json'),JSON.stringify({
   app_asar_sha256:asarSha,
   native_under_app_asar_unpacked:nativeRel.startsWith('resources/app.asar.unpacked/'),
   missing_binding_fails_closed:true,
+  negative_test_target:'resources/app.asar.unpacked/node_modules/better-sqlite3/prebuilds/linux-x64.node',
+  runtime_platform:'linux',
+  runtime_arch:'x64',
   sandbox_mode:'root:root:4755'
 },null,2)+'\n');
 fs.writeFileSync(path.join(dir,'probe-status.json'),JSON.stringify({result:'PASS',explicit_missing_binding_failure:true},null,2)+'\n');
