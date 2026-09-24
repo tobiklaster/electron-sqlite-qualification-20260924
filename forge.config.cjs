@@ -2,9 +2,8 @@ const { VitePlugin } = require('@electron-forge/plugin-vite');
 module.exports = {
   packagerConfig: {
     // Forge/Vite package staging must preserve runtime node_modules before ASAR.
-    // Electron Packager's asar=true default then unpacks native *.node files
-    // into resources/app.asar.unpacked.
-    asar: true,
+    // Make Electron Packager's documented native-node unpack glob explicit.
+    asar: { unpack: '**/{.**,**}/**/*.node' },
     prune: true,
     ignore: (file) => {
       if (!file) return false;
