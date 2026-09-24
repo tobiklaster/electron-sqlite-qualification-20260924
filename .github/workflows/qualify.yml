@@ -1,0 +1,42 @@
+name: Synthetic Ubuntu 24.04 x64 qualification
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bs01-active-dev-public-qualification
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout exact public repository commit without third-party action
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+      - name: Exact runner preflight
+        shell: bash
+        run: bash scripts/preflight.sh
+      - name: Currentness probes and bounded Q01-Q10
+        shell: bash
+        run: bash scripts/qualify.sh
+      - name: Upload bounded synthetic evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bs01-active-dev-synthetic-evidence
+          path: |
+            .qualification/results
+            .qualification/qualification-result.zip
+            package-lock.json
+          if-no-files-found: warn
+          retention-days: 1
+          compression-level: 6
