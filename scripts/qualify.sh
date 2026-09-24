@@ -35,29 +35,39 @@ prepare_lock() {
   cp .qualification/current/lock-integrity.json "$dir/lock-integrity.json"
 }
 
+PROBE_STAGE="not_started"
 probe_inner() {
   local name="$1" vite="$2" dir="$3"
+  PROBE_STAGE="clean"
   rm -rf node_modules package-lock.json out .vite
   rm -rf .qualification/current
   mkdir -p .qualification/current "$dir"
+  PROBE_STAGE="write_package"
   node scripts/write-package.cjs "$vite" || return 1
+  PROBE_STAGE="lock_resolution"
   prepare_lock "$vite" "$dir" || return 1
   rm -rf node_modules
+  PROBE_STAGE="npm_ci"
   "$NPM" ci --ignore-scripts=false --no-audit --no-fund || return 1
   [[ "$("$NPM" --version)" == "11.19.0" ]] || return 1
+  PROBE_STAGE="electron_binary_materialization"
   ./node_modules/.bin/install-electron --no || return 1
   [[ -x "node_modules/electron/dist/electron" ]] || return 1
   [[ -f "node_modules/electron/dist/chrome-sandbox" ]] || return 1
+  PROBE_STAGE="typescript_and_config"
   ./node_modules/.bin/tsc -p tsconfig.json --noEmit || return 1
   node -e "require('./forge.config.cjs')" || return 1
 
   prepare_suid_sandbox "node_modules/electron/dist/chrome-sandbox" || return 1
+  PROBE_STAGE="dev_launch"
   QUAL_PHASE="$name-dev" QUAL_RUNTIME_RECEIPT="$dir/dev-runtime.json" timeout 120s xvfb-run -a ./node_modules/.bin/electron-forge start || return 1
   node -e "const fs=require('fs'); const r=JSON.parse(fs.readFileSync(process.argv[1],'utf8')); if(r.result!=='PASS'||!r.native_binding_loaded||!r.renderer_ready) process.exit(1)" "$dir/dev-runtime.json" || return 1
 
+  PROBE_STAGE="package"
   rm -rf out
   ./node_modules/.bin/electron-forge package || return 1
   local appdir appbin packaged_sandbox native native_sha rc
+  PROBE_STAGE="package_output_discovery"
   appdir="$(find out -mindepth 1 -maxdepth 1 -type d -name '*linux-x64' | head -n1)"
   [[ -n "$appdir" ]] || return 1
   appbin="$appdir/electron-sqlite-qualification"
@@ -65,13 +75,17 @@ probe_inner() {
   packaged_sandbox="$appdir/chrome-sandbox"
   prepare_suid_sandbox "$packaged_sandbox" || return 1
 
+  PROBE_STAGE="native_asar_layout_discovery"
   native="$(find "$appdir" -type f -name '*.node' | head -n1)"
   [[ -n "$native" && -f "$native" ]] || return 1
   native_sha="$(sha256sum "$native" | awk '{print $1}')"
 
+  PROBE_STAGE="packaged_launch"
   QUAL_PHASE="$name-packaged" QUAL_RUNTIME_RECEIPT="$dir/packaged-runtime.json" timeout 90s xvfb-run -a "$appbin" || return 1
+  PROBE_STAGE="packaged_receipt_readback"
   node -e "const fs=require('fs'); const r=JSON.parse(fs.readFileSync(process.argv[1],'utf8')); if(r.result!=='PASS'||!r.native_binding_loaded||!r.renderer_ready||!r.sqlite_version) process.exit(1)" "$dir/packaged-runtime.json" || return 1
 
+  PROBE_STAGE="missing_binding_negative"
   mv "$native" "$native.missing"
   set +e
   QUAL_PHASE="$name-missing-binding" QUAL_RUNTIME_RECEIPT="$dir/missing-binding-runtime.json" timeout 60s xvfb-run -a "$appbin"
@@ -89,6 +103,7 @@ fs.writeFileSync(path.join(dir,'probe-details.json'),JSON.stringify({
 },null,2)+'\n');
 fs.writeFileSync(path.join(dir,'probe-status.json'),JSON.stringify({result:'PASS',explicit_missing_binding_failure:true},null,2)+'\n');
 NODE
+  PROBE_STAGE="pass"
   return 0
 }
 
@@ -96,7 +111,7 @@ probe() {
   local name="$1" vite="$2" dir="$RESULTS/$1"
   if probe_inner "$name" "$vite" "$dir"; then return 0; fi
   mkdir -p "$dir"
-  printf '%s\n' '{"result":"FAIL"}' > "$dir/probe-status.json"
+  printf '{"result":"FAIL","stage":"%s"}\n' "$PROBE_STAGE" > "$dir/probe-status.json"
   return 1
 }
 
