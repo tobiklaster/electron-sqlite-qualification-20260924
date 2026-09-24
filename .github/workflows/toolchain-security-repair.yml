@@ -25,3 +25,12 @@ jobs:
       - name: Fresh lock security repair and bounded Q01-Q03
         shell: bash
         run: bash security-repair/run-security-repair.sh
+      - name: Upload public synthetic security repair evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bs01-toolchain-security-repair-evidence
+          path: .qualification/security-repair
+          if-no-files-found: warn
+          retention-days: 1
+          compression-level: 6
