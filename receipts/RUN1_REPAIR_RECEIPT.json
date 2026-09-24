@@ -1,0 +1,61 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_RUN_REPAIR_RECEIPT_V1",
+  "status": "RUN1_INVALID_EVIDENCE__HARNESS_REPAIRED__RERUN_REQUIRED",
+  "run1": {
+    "workflow_run_id": 36067439677,
+    "head_sha": "72bc0fb8cebb65825e5476e2a77de1664ec1a1cb",
+    "job_id": 107860402519,
+    "artifact_id": 10836918178,
+    "artifact_sha256": "c79c44858d0e316f85d6f9e5c38ffd594432435ff0dc1befd3b955f4086588db",
+    "runner_preflight": "PASS__UBUNTU_24_04_5_X86_64_EXT4",
+    "disposition": "INVALID_EXECUTION_EVIDENCE__HARNESS_DEFECT",
+    "currentness_pass_claimed": false,
+    "q01_q10_pass_claimed": false
+  },
+  "defects": [
+    "Probe control flow allowed Electron launch failures to be followed by later commands and incorrectly emitted PASS.",
+    "Final Q01-Q03 receipt heredoc contained a JavaScript syntax error and undefined identifiers.",
+    "Electron chrome-sandbox on the GitHub runner/package was not configured root:root mode 4755 before launch.",
+    "npm 11.19.0 was invoked explicitly but was not placed first on PATH, so Forge system checks observed the runner npm instead."
+  ],
+  "bounded_repairs": [
+    {
+      "path": "scripts/write-package.cjs",
+      "commit": "8902397f649d34b40a78e96d4f8e25ca62f38f97",
+      "effect": "Add exact packageManager npm@11.19.0."
+    },
+    {
+      "path": "scripts/pin-install-scripts.cjs",
+      "commit": "09dafcd3cbb68ce6bd49c7ff13dea2e5a40393a5",
+      "effect": "Pin reviewed install-script approvals for better-sqlite3 and the exact resolved esbuild."
+    },
+    {
+      "path": "scripts/write-q01-q03.cjs",
+      "commit": "e3eaf18ef890abd9695bb1f57ce864c66f4dd4cd",
+      "effect": "Deterministic fail-closed Q01-Q03 receipt writer."
+    },
+    {
+      "path": "scripts/finalize-results.cjs",
+      "commit": "3ce2afce8cace9273f5f617578e101fa759724b4",
+      "effect": "Deterministic final Q01-Q10 disposition writer."
+    },
+    {
+      "path": "scripts/qualify.sh",
+      "commit": "84ecbfd87adb539fa80ff851530a373566499ff9",
+      "effect": "Hard fail-fast probes, effective npm 11.19.0 PATH, correct SUID sandbox setup, selected-candidate Q04-Q10 execution and hashed result packaging."
+    }
+  ],
+  "scope_preserved": {
+    "public_synthetic_only": true,
+    "runner": "ubuntu-24.04",
+    "currentness_control": "vite@5.4.19",
+    "candidate_A": "vite@8.3.1",
+    "candidate_B": "vite@7.3.6",
+    "q01_q10": "UNCHANGED",
+    "no_product_code": true,
+    "no_product_repository": true,
+    "zero_spend": true,
+    "no_vite_adoption": true,
+    "formal_effect_created": false
+  }
+}
