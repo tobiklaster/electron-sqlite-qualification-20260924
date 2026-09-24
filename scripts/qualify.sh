@@ -45,6 +45,9 @@ probe_inner() {
   rm -rf node_modules
   "$NPM" ci --ignore-scripts=false --no-audit --no-fund || return 1
   [[ "$("$NPM" --version)" == "11.19.0" ]] || return 1
+  ./node_modules/.bin/install-electron --no || return 1
+  [[ -x "node_modules/electron/dist/electron" ]] || return 1
+  [[ -f "node_modules/electron/dist/chrome-sandbox" ]] || return 1
   ./node_modules/.bin/tsc -p tsconfig.json --noEmit || return 1
   node -e "require('./forge.config.cjs')" || return 1
 
