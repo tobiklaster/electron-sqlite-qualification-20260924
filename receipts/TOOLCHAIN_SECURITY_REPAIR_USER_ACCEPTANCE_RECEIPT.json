@@ -1,0 +1,25 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_TOOLCHAIN_SECURITY_REPAIR_USER_ACCEPTANCE_RECEIPT_V1",
+  "status": "VALID_USER_ACCEPTANCE",
+  "authority_id": "PRIMARY-BS01-ACTIVE-DEV-TOOLCHAIN-SECURITY-REPAIR-AUTHORITY-001",
+  "revision": 1,
+  "accepted_token": "AKKOORD PRIMARY-BS01-ACTIVE-DEV-TOOLCHAIN-SECURITY-REPAIR-AUTHORITY-001",
+  "authority_candidate_sha256": "4760915fc047c31b2ef79deeddb696c82bd1c8622bb64be13b9ec5f8edaf089f",
+  "bound_execution_plan_sha256": "97df6547eaa04f2ad61f2b5aca8c798ab13ff58a6fb707cd731cb118e28df098",
+  "preparation_package_sha256": "0deaa403ef40c757bf2757c041fd674fa7ee3eafb295d8cfb828e635417bb7b9",
+  "local_acceptance_receipt_sha256": "90c7247f1a128fa713f137496b4c7ce449cf73dc093f91cb32b87e599a64fdc8",
+  "orion_bc_review": "PASS_UNCHANGED",
+  "fresh_binding_recheck": "PASS",
+  "repository": "tobiklaster/electron-sqlite-qualification-20260924",
+  "repository_visibility": "PUBLIC",
+  "main_before_repair_mutation": "f16fcce813b3ab79a681457e03cbad92e5e9f85c",
+  "effect": "BOUNDED_PUBLIC_SYNTHETIC_TOOLCHAIN_SECURITY_REPAIR_QUALIFICATION_ONLY",
+  "boundaries": {
+    "product_repository_write": false,
+    "bs01_build": false,
+    "baseline_adoption": false,
+    "qg_effect": false,
+    "paid_provider": false,
+    "formal_effect": false
+  }
+}
