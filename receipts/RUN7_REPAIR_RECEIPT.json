@@ -1,0 +1,74 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_RUN_REPAIR_RECEIPT_V1",
+  "status": "RUN7_CURRENTNESS_HOLD__EXPLICIT_ASAR_NATIVE_UNPACK_AND_LAYOUT_DIAGNOSTIC_ADDED__RERUN_REQUIRED",
+  "run7": {
+    "workflow_run_id": 36070762788,
+    "head_sha": "fd8233b117a45d0f151b869b31315ea74b9dad91",
+    "job_id": 107870925359,
+    "job_conclusion": "success",
+    "artifact_id": 10837763652,
+    "artifact_outer_sha256": "6cc50c445b47e9b6daf80aefdecf12662bedfc99d2a9e85be8ed626f82d87fc0",
+    "inner_result_zip_sha256": "6df894cdf855afd4aba65055ef5f0b58659e4a4afbe1865ba947a92b251ce568",
+    "runner_preflight": {
+      "result": "PASS",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "x86_64",
+      "root_filesystem": "ext4",
+      "workspace_filesystem": "ext4",
+      "runner_temp_filesystem": "ext4",
+      "label": "ubuntu-24.04",
+      "image_os": "ubuntu24",
+      "image_version": "20260920.314.1",
+      "runner_version": "2.337.0"
+    },
+    "currentness": {
+      "control_vite_5_4_19": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "candidate_A_vite_8_3_1": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "candidate_B_vite_7_3_6": {
+        "result": "FAIL",
+        "stage": "native_asar_layout_discovery"
+      },
+      "preferred_candidate": null,
+      "disposition": "HOLD_CURRENTNESS",
+      "q01_q10": "NOT_EXECUTED"
+    },
+    "pass_claimed": false
+  },
+  "exact_discriminator": "Preserving runtime node_modules through Forge/Vite package staging was not sufficient by itself: all three Vite lines still fail only because no physical native .node is discovered under the packaged app tree. The packaged runtime itself therefore remains unproven.",
+  "source_basis": {
+    "electron_packager_usage": "Packager documents asar default=true and documents the native-node unpack glob **/{.**,**}/**/*.node into app.asar.unpacked.",
+    "forge_issue_3934": "Upstream Forge issue demonstrates that runtime node_modules staging and native unpack behavior can regress independently in Forge/Vite packaging."
+  },
+  "bounded_repairs": [
+    {
+      "path": "forge.config.cjs",
+      "commit": "a48e7d249beab07857baca9aa4c81eaa49179936",
+      "effect": "Keep the already-added runtime node_modules staging rule and make Electron Packager's documented native .node ASAR unpack glob explicit."
+    },
+    {
+      "path": "scripts/qualify.sh",
+      "commit": "e875e67d40b6ac21cfe44bba4dae96fe2c0a507a",
+      "effect": "Capture resources tree, physical native files, and ASAR better-sqlite3/native entries before the existing fail-closed native layout test."
+    }
+  ],
+  "scope_preserved": {
+    "runner": "ubuntu-24.04",
+    "currentness_control": "vite@5.4.19",
+    "candidate_A": "vite@8.3.1",
+    "candidate_B": "vite@7.3.6",
+    "selection_rule": "UNCHANGED",
+    "q01_q10": "UNCHANGED",
+    "public_synthetic_only": true,
+    "no_product_repository": true,
+    "zero_spend": true,
+    "no_vite_adoption": true,
+    "no_build_authority": true,
+    "formal_effect_created": false
+  }
+}
