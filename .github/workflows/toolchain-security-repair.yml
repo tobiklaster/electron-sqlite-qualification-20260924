@@ -1,0 +1,12 @@
+name: BS01 toolchain security repair qualification
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Run authorized public synthetic repair
+        shell: bash
+        run: bash security-repair/run-security-repair.sh
