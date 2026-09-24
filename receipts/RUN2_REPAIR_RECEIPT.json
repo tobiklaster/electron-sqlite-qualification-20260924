@@ -1,0 +1,64 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_RUN_REPAIR_RECEIPT_V1",
+  "status": "RUN2_CURRENTNESS_HOLD__HARNESS_INSTALL_MECHANICS_REPAIRED__RERUN_REQUIRED",
+  "run2": {
+    "workflow_run_id": 36068279813,
+    "head_sha": "11d7a686ff5fbc9844fcf849dca4d2f00d2f8156",
+    "job_id": 107863036108,
+    "job_conclusion": "success",
+    "artifact_id": 10837615825,
+    "artifact_outer_sha256": "9188f7f8d89d2d1eb99fedc13728ff82f90473daa9b980ac971c133ec5eac5f5",
+    "inner_result_zip_sha256": "94057b4fb99f1b85a35abc66d08198f1467e241060f47d05c92eb951fa678185",
+    "runner_preflight": {
+      "result": "PASS",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "x86_64",
+      "root_filesystem": "ext4",
+      "workspace_filesystem": "ext4",
+      "runner_temp_filesystem": "ext4",
+      "label": "ubuntu-24.04",
+      "image_version": "20260920.314.1",
+      "runner_version": "2.337.0"
+    },
+    "currentness": {
+      "control_vite_5_4_19": "FAIL",
+      "candidate_A_vite_8_3_1": "FAIL",
+      "candidate_B_vite_7_3_6": "FAIL",
+      "preferred_candidate": null,
+      "disposition": "HOLD_CURRENTNESS",
+      "q01_q10": "NOT_EXECUTED"
+    },
+    "pass_claimed": false
+  },
+  "exact_discriminators": [
+    "Control/Vite7 reached clean lock + npm ci but failed before Electron launch because the exact Electron binary had not yet been materialized; Electron 44 downloads its binary on first dev run or through its package-provided install-electron helper.",
+    "Vite8 lock contains no node_modules/esbuild entry; the approval helper incorrectly treated absence of esbuild as fatal even though Vite8's resolved graph does not require that package.",
+    "These are harness/install-mechanics discriminators; they do not prove Vite 5/7/8 incompatibility."
+  ],
+  "bounded_repairs": [
+    {
+      "path": "scripts/pin-install-scripts.cjs",
+      "commit": "2b515f21a40faf6aecaaa328cfd3b49e2c261f5a",
+      "effect": "Make exact esbuild install-script approval conditional on esbuild being present in the resolved lock; retain exact better-sqlite3 approval."
+    },
+    {
+      "path": "scripts/qualify.sh",
+      "commit": "83085337ddb598089bd4ef9de02aa686866a24c5",
+      "effect": "Invoke the exact Electron package-provided install-electron helper after npm ci, verify binary and chrome-sandbox presence, then configure SUID sandbox and continue fail-fast."
+    }
+  ],
+  "scope_preserved": {
+    "runner": "ubuntu-24.04",
+    "currentness_control": "vite@5.4.19",
+    "candidate_A": "vite@8.3.1",
+    "candidate_B": "vite@7.3.6",
+    "q01_q10": "UNCHANGED",
+    "selection_rule": "UNCHANGED",
+    "public_synthetic_only": true,
+    "no_product_repository": true,
+    "zero_spend": true,
+    "no_vite_adoption": true,
+    "no_build_authority": true,
+    "formal_effect_created": false
+  }
+}
