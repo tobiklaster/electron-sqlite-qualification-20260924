@@ -1,0 +1,79 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_RUN_REPAIR_RECEIPT_V1",
+  "status": "RUN8_CURRENTNESS_HOLD__NEGATIVE_TEST_TARGET_REPAIRED__RERUN_REQUIRED",
+  "run8": {
+    "workflow_run_id": 36071101863,
+    "head_sha": "fb1de33d1afaa4e4a069b17a6257aec0df33351d",
+    "job_id": 107872006617,
+    "job_conclusion": "success",
+    "artifact_id": 10838576563,
+    "artifact_outer_sha256": "2cf635f714f72bf88db089caa0ed7a177df741e84d2784a146e2bcaa15413611",
+    "inner_result_zip_sha256": "140bafd3c2e7a32a7a065740ab60c47e68d5380573d7336315267f8cdefd4a3b",
+    "runner_preflight": {
+      "result": "PASS",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "x86_64",
+      "root_filesystem": "ext4",
+      "workspace_filesystem": "ext4",
+      "runner_temp_filesystem": "ext4",
+      "label": "ubuntu-24.04",
+      "image_os": "ubuntu24",
+      "image_version": "20260920.314.1",
+      "runner_version": "2.337.0"
+    },
+    "packaged_runtime": {
+      "control_vite_5_4_19": "PASS",
+      "candidate_A_vite_8_3_1": "PASS",
+      "candidate_B_vite_7_3_6": "PASS",
+      "electron": "44.4.4",
+      "embedded_node": "24.21.0",
+      "chromium": "152.0.7977.130",
+      "sqlite": "3.53.4",
+      "native_binding_loaded": true,
+      "renderer_ready": true
+    },
+    "physical_native_layout": {
+      "app_asar": true,
+      "app_asar_unpacked": true,
+      "linux_x64_native": "resources/app.asar.unpacked/node_modules/better-sqlite3/prebuilds/linux-x64.node"
+    },
+    "currentness": {
+      "control_vite_5_4_19": {
+        "result": "FAIL",
+        "stage": "missing_binding_negative"
+      },
+      "candidate_A_vite_8_3_1": {
+        "result": "FAIL",
+        "stage": "missing_binding_negative"
+      },
+      "candidate_B_vite_7_3_6": {
+        "result": "FAIL",
+        "stage": "missing_binding_negative"
+      },
+      "preferred_candidate": null,
+      "disposition": "HOLD_CURRENTNESS",
+      "q01_q10": "NOT_EXECUTED"
+    },
+    "pass_claimed": false
+  },
+  "exact_discriminator": "The packaged application and native binding now pass for control, Vite 8.3.1 and Vite 7.3.6. The only failure is the negative test: the harness removed the first alphabetically discovered .node, which was a foreign-platform prebuild, so the active linux-x64 native remained available and the app correctly continued to launch.",
+  "bounded_repair": {
+    "path": "scripts/qualify.sh",
+    "commit": "a3ee9eaf602fc77bf53c875b88621647d8e4a1cb",
+    "effect": "For the already-preflight-bound Linux x64 row, target exactly resources/app.asar.unpacked/node_modules/better-sqlite3/prebuilds/linux-x64.node in the missing-binding negative test and record that exact target in the probe receipt."
+  },
+  "scope_preserved": {
+    "runner": "ubuntu-24.04",
+    "currentness_control": "vite@5.4.19",
+    "candidate_A": "vite@8.3.1",
+    "candidate_B": "vite@7.3.6",
+    "selection_rule": "UNCHANGED",
+    "q01_q10": "UNCHANGED",
+    "public_synthetic_only": true,
+    "no_product_repository": true,
+    "zero_spend": true,
+    "no_vite_adoption": true,
+    "no_build_authority": true,
+    "formal_effect_created": false
+  }
+}
