@@ -1,0 +1,71 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_QUALIFICATION_RUN_REPAIR_RECEIPT_V1",
+  "status": "RUN4_CURRENTNESS_HOLD__PACKAGED_NATIVE_ASAR_LAYOUT_REPAIRED__RERUN_REQUIRED",
+  "run4": {
+    "workflow_run_id": 36069431241,
+    "head_sha": "188054f0e88a2bfc1eba3beef01941c1ad3b515d",
+    "job_id": 107866665438,
+    "job_conclusion": "success",
+    "artifact_id": 10837418634,
+    "artifact_outer_sha256": "e78139bd65a921ee81a1806ffd0f1f8a1ca4d18f3dea5ba33ba293f1d9c2f566",
+    "inner_result_zip_sha256": "38367914d3157b9848f8db543c35e9f5ca334143f27cb373ee32e04e88e43dea",
+    "runner_preflight": {
+      "result": "PASS",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "x86_64",
+      "root_filesystem": "ext4",
+      "workspace_filesystem": "ext4",
+      "runner_temp_filesystem": "ext4",
+      "label": "ubuntu-24.04",
+      "image_version": "20260920.314.1",
+      "runner_version": "2.337.0"
+    },
+    "dev_runtime": {
+      "control_vite_5_4_19": "PASS",
+      "candidate_A_vite_8_3_1": "PASS",
+      "candidate_B_vite_7_3_6": "PASS",
+      "electron": "44.4.4",
+      "embedded_node": "24.21.0",
+      "chromium": "152.0.7977.130",
+      "sqlite": "3.53.4",
+      "native_binding_loaded": true,
+      "renderer_ready": true
+    },
+    "currentness_final": {
+      "control_vite_5_4_19": "FAIL",
+      "candidate_A_vite_8_3_1": "FAIL",
+      "candidate_B_vite_7_3_6": "FAIL",
+      "preferred_candidate": null,
+      "disposition": "HOLD_CURRENTNESS",
+      "q01_q10": "NOT_EXECUTED"
+    },
+    "pass_claimed": false
+  },
+  "exact_discriminator": "All three probes pass clean lock/npm-ci/dev runtime/native load and Forge packaging, but stop after packaging before packaged-runtime receipt; artifact contains no packaged-runtime.json. This isolates the remaining blocker to packaged native ASAR layout/launch path, not Vite-major compatibility.",
+  "bounded_repairs": [
+    {
+      "path": "forge.config.cjs",
+      "commit": "f25ededdfd10be70101993571f2dc58149d5d4cf",
+      "effect": "Replace generic native unpack glob with Electron Packager native-module ASAR unpack pattern."
+    },
+    {
+      "path": "scripts/qualify.sh",
+      "commit": "44b5d0ba868af5041952eb2464a3fec2e8602273",
+      "effect": "Add fail-closed stage receipts for package output, native ASAR layout, packaged launch, receipt readback and missing-binding negative test."
+    }
+  ],
+  "scope_preserved": {
+    "runner": "ubuntu-24.04",
+    "currentness_control": "vite@5.4.19",
+    "candidate_A": "vite@8.3.1",
+    "candidate_B": "vite@7.3.6",
+    "q01_q10": "UNCHANGED",
+    "selection_rule": "UNCHANGED",
+    "public_synthetic_only": true,
+    "no_product_repository": true,
+    "zero_spend": true,
+    "no_vite_adoption": true,
+    "no_build_authority": true,
+    "formal_effect_created": false
+  }
+}
