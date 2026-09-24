@@ -1,0 +1,53 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_TOOLCHAIN_SECURITY_REPAIR_EXECUTION_PREP_RECEIPT_V1",
+  "status": "READY_FOR_WORKFLOW_DISPATCH__NO_EXECUTION_YET",
+  "authority_id": "PRIMARY-BS01-ACTIVE-DEV-TOOLCHAIN-SECURITY-REPAIR-AUTHORITY-001",
+  "revision": 1,
+  "user_acceptance": "VALID",
+  "local_user_acceptance_receipt_sha256": "90c7247f1a128fa713f137496b4c7ce449cf73dc093f91cb32b87e599a64fdc8",
+  "authority_candidate_sha256": "4760915fc047c31b2ef79deeddb696c82bd1c8622bb64be13b9ec5f8edaf089f",
+  "bound_execution_plan_sha256": "97df6547eaa04f2ad61f2b5aca8c798ab13ff58a6fb707cd731cb118e28df098",
+  "repository": "tobiklaster/electron-sqlite-qualification-20260924",
+  "publication_scope": {
+    "workflow": ".github/workflows/toolchain-security-repair.yml",
+    "security_repair": "security-repair/**",
+    "receipts": "receipts/TOOLCHAIN_SECURITY_REPAIR_*.json",
+    "product_repository": "PROHIBITED"
+  },
+  "published_commits": {
+    "acceptance_receipt": "e21f413aad089f520e88f4bce8390e69eb153667",
+    "package_template": "5d2d7604bb8bc7f6ae23d895014977056e770679",
+    "analyzer": "a500da68f31d314fe04352b5c788927f36bc9a91",
+    "repair_driver_initial": "abbc9ab531527467ab6c6cc4f31a4ada382b69b6",
+    "workflow_initial": "eb42ba72c9e711d0604dfe3b760a77202e400ef9",
+    "workflow_binding": "55dc63f0b25fe85b4ffc630c1e630b0f5a8cd505",
+    "workflow_artifact_upload": "3aac59c7168610c25eaabeef6cf9bd53befce0a5",
+    "repair_driver_hardening": "bafe3618fa79ef6199b6957aaba44f23e5e686c9"
+  },
+  "exact_probe": {
+    "electron": "44.4.4",
+    "forge": "7.11.2",
+    "forge_vite_plugin": "7.11.2",
+    "vite": "8.3.1",
+    "typescript": "7.0.2",
+    "react": "19.3.0",
+    "react_dom": "19.3.0",
+    "better_sqlite3": "13.0.3",
+    "electron_rebuild_override": "4.2.0",
+    "npm": "11.19.0",
+    "runner": "ubuntu-24.04"
+  },
+  "execution_state": {
+    "workflow_dispatched": false,
+    "fresh_lock_materialized": false,
+    "npm_audit_run": false,
+    "q01_q03_run": false,
+    "baseline_adopted": false,
+    "product_repository_write": false,
+    "bs01_build": false,
+    "qg_effect": false,
+    "paid_provider": false,
+    "formal_effect": false
+  },
+  "connector_capability": "NO_WORKFLOW_DISPATCH_CALL_AVAILABLE__ONE_PROVIDER_UI_DISPATCH_REQUIRED"
+}
