@@ -78,7 +78,12 @@ probe_inner() {
   PROBE_STAGE="native_asar_layout_discovery"
   native="$(find "$appdir" -type f -name '*.node' | head -n1)"
   [[ -n "$native" && -f "$native" ]] || return 1
+  [[ "$native" == "$appdir/resources/app.asar.unpacked/"* ]] || return 1
+  local asar_file="$appdir/resources/app.asar"
+  [[ -f "$asar_file" ]] || return 1
   native_sha="$(sha256sum "$native" | awk '{print $1}')"
+  local asar_sha
+  asar_sha="$(sha256sum "$asar_file" | awk '{print $1}')"
 
   PROBE_STAGE="packaged_launch"
   QUAL_PHASE="$name-packaged" QUAL_RUNTIME_RECEIPT="$dir/packaged-runtime.json" timeout 90s xvfb-run -a "$appbin" || return 1
@@ -94,12 +99,20 @@ probe_inner() {
   mv "$native.missing" "$native"
   [[ "$rc" -ne 0 ]] || return 1
 
-  node - "$dir" "$native" "$native_sha" <<'NODE'
+  node - "$dir" "$native" "$native_sha" "$asar_file" "$asar_sha" "$appdir" <<'NODE'
 const fs=require('fs'); const path=require('path');
-const [dir,native,nativeSha]=process.argv.slice(2);
+const [dir,native,nativeSha,asarFile,asarSha,appdir]=process.argv.slice(2);
+const nativeRel=path.relative(appdir,native);
 fs.writeFileSync(path.join(dir,'probe-details.json'),JSON.stringify({
-  result:'PASS', packaged_native_path:native, packaged_native_sha256:nativeSha,
-  missing_binding_fails_closed:true, sandbox_mode:'root:root:4755'
+  result:'PASS',
+  packaged_native_path:native,
+  packaged_native_relative_path:nativeRel,
+  packaged_native_sha256:nativeSha,
+  app_asar_path:asarFile,
+  app_asar_sha256:asarSha,
+  native_under_app_asar_unpacked:nativeRel.startsWith('resources/app.asar.unpacked/'),
+  missing_binding_fails_closed:true,
+  sandbox_mode:'root:root:4755'
 },null,2)+'\n');
 fs.writeFileSync(path.join(dir,'probe-status.json'),JSON.stringify({result:'PASS',explicit_missing_binding_failure:true},null,2)+'\n');
 NODE
