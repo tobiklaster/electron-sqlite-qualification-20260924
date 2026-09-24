@@ -20,8 +20,10 @@ const rec = {
     result: 'PASS', better_sqlite3: pkg.dependencies['better-sqlite3'],
     packaged_native_load: packaged.native_binding_loaded === true,
     packaged_native_path: details.packaged_native_path,
+    packaged_native_relative_path: details.packaged_native_relative_path,
     packaged_native_sha256: details.packaged_native_sha256,
-    asar_native_present: true,
+    app_asar_sha256: details.app_asar_sha256,
+    asar_native_present: details.native_under_app_asar_unpacked === true,
     missing_binding_fails_closed: details.missing_binding_fails_closed === true,
     sqlite_version: packaged.sqlite_version
   },
@@ -32,6 +34,7 @@ const rec = {
     npm: '11.19.0', vite
   }
 };
+if (details.native_under_app_asar_unpacked !== true) throw new Error('native binding not proven under app.asar.unpacked');
 for (const [k,v] of Object.entries(rec)) {
   if (k.startsWith('Q0') && v.result !== 'PASS') throw new Error(`${k} not PASS`);
 }
