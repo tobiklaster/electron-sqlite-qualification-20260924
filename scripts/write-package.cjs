@@ -5,6 +5,7 @@ const pkg = {
   name: 'electron-sqlite-qualification',
   version: '0.0.0-qualification',
   private: true,
+  packageManager: 'npm@11.19.0',
   main: '.vite/build/main.js',
   scripts: {},
   dependencies: {
