@@ -1,0 +1,121 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_ACTIVE_DEV_QUALIFICATION_FINAL_RECEIPT_V1",
+  "receipt_status": "PASS",
+  "qualification_scope": "ACTIVE_DEVELOPMENT_CONFIGURATION_ONLY",
+  "qualification_claim": "ACTIVE_DEVELOPMENT_CONFIGURATION = UBUNTU_24_04_X64_EXT4__QUALIFIED",
+  "workflow": {
+    "run_id": 36071696346,
+    "run_number": 9,
+    "job_id": 107873891773,
+    "head_sha": "e3d51223a1ecfd29ebdb4fcae547265fa62e5604",
+    "event": "workflow_dispatch",
+    "job_conclusion": "success"
+  },
+  "runner": {
+    "preflight": "PASS",
+    "os": "Ubuntu 24.04.5 LTS",
+    "os_version_id": "24.04",
+    "architecture": "x86_64",
+    "root_filesystem": "ext4",
+    "workspace_filesystem": "ext4",
+    "runner_temp_filesystem": "ext4",
+    "runner_label": "ubuntu-24.04",
+    "image_os": "ubuntu24",
+    "image_version": "20260920.314.1",
+    "runner_version": "2.337.0"
+  },
+  "currentness": {
+    "control": {
+      "vite": "5.4.19",
+      "result": "PASS"
+    },
+    "candidate_A": {
+      "vite": "8.3.1",
+      "result": "PASS"
+    },
+    "candidate_B": {
+      "vite": "7.3.6",
+      "result": "SKIPPED_NOT_REQUIRED"
+    },
+    "preferred_currentness_candidate": "8.3.1",
+    "selection_rule_applied": "A_FULL_PASS__DO_NOT_RUN_B",
+    "no_automatic_adoption": true
+  },
+  "selected_toolchain": {
+    "electron": "44.4.4",
+    "embedded_node": "24.21.0",
+    "chromium": "152.0.7977.130",
+    "npm": "11.19.0",
+    "vite": "8.3.1",
+    "better_sqlite3": "13.0.3",
+    "sqlite": "3.53.4"
+  },
+  "lock": {
+    "lockfile_version": 3,
+    "package_count": 531,
+    "sri_complete": true,
+    "lock_sha256": "b884fc61236426a9fdd2262c2702ecf3ea9e42a8bbedbecf68b427e124a3d3d0",
+    "graph_sha256": "0493c624d70fb1412285db157850eb64d70104b92422f1615ee31de82a14a939"
+  },
+  "native_binding": {
+    "result": "PASS",
+    "packaged_relative_path": "resources/app.asar.unpacked/node_modules/better-sqlite3/prebuilds/linux-x64.node",
+    "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "app_asar_sha256": "389fd7c8bae6ac851e21357d3776a9ca84ef472093a0cf2e6bf3e4b21f60d751",
+    "missing_binding_fails_closed": true
+  },
+  "q01_q10": {
+    "Q01_LOCK": "PASS",
+    "Q02_PACKAGE_LAUNCH": "PASS",
+    "Q03_NATIVE_BINDING": "PASS",
+    "Q04_SQLITE_CORE": "PASS",
+    "Q05_MIGRATION": "PASS",
+    "Q06_BACKUP_RESTORE": "PASS",
+    "Q07_FAULT_RECONCILIATION": "PASS",
+    "Q08_PRIVACY_SECRET": "PASS",
+    "Q09_UNKNOWN_NEWER": "PASS",
+    "Q10_WORKER_BOUNDARY": "PASS"
+  },
+  "q04_q10_selected_evidence": {
+    "sqlite_core_schema_sha256": "404b1ca2f0861ab3ff60039943a6289ace9a41fe2a1fc10dbea909e101f96753",
+    "migration_sha256": "b5ee8dc2cfdec209a9a9bdaedd39e2e27750cbb0ab08bc9866becc1789020497",
+    "backup_sha256": "083755390c3794f92cfdd2a64b19e36ba05da4e89b54418b66769a291a10e15b",
+    "blob_sha256": "7019a52b4f6a8abaf88b51df5687889e5122d1380d5a92a24667740c5f27fd6a",
+    "unknown_newer_sha256": "56c6fc8ca526f09c543c6918ea65a4f53f0b0d300bfd3630af3661f9060c38ac",
+    "worker_responsiveness_ticks": 35
+  },
+  "evidence_integrity": {
+    "artifact_id": 10837929728,
+    "artifact_outer_sha256": "2094cbe55ba51f1c477e8b4f1a51b99fdd9f2270c90d53ad7040299c9bd4acca",
+    "inner_result_zip_sha256": "4878469fe87de7bbdb03de68d69d98ec48ce74980a31d0522454ff98745aaf36",
+    "manifest_member_count": 26,
+    "manifest_verification": "PASS",
+    "final_status_sha256": "864b81ab0ef9977005cd19eeac9ad7e13a2eecdd0f31a428d3cfe657a9330653",
+    "q01_q03_sha256": "4779169a74f56152b949b08c7df2af71ed48eaec19bb885109ad5e958d8fd4ee",
+    "q04_q10_sha256": "47b85e7744239c58d81a4241bf1af4940ea37487659bebf9778b1b648bc1eca9",
+    "testset_sha256": "c69064bde7c8e53863c66c689e639f3a295566d4ab0b52638e1e0b911d0abccd"
+  },
+  "authority_binding": {
+    "primary_dynamic_current_state_id": "ENGOS-PRIMARY-DYNAMIC-R0012-cf861aab7e444965",
+    "primary_dynamic_current_content_hash": "cf861aab7e4449655a100fcec2937cd055811ac36696c3042a9b8caf729c7130",
+    "frozen_wrapper_sha256": "29deda44b7612cc44153a9154f9c0118f9903be4f8e740368f3f4cfd3e5f92dd",
+    "qualification_authority_r2_candidate_sha256": "708ded18f10107bc1a611ab48ebf5f03afa646936d3f99879d20c6841329c751",
+    "qualification_authority_r2_acceptance_receipt_sha256": "458d8d50177ccea0d26bb28e784ee0eb9fe929ae505aa4d59aa758f26f073e58",
+    "zero_spend_matrix_sha256": "8826054490be040fe4b603c391641dead7532f8a2fc8f521aa113e22a533a6cc",
+    "active_dev_public_qualification_authority_r1_sha256": "efb42e8214869c59982ebedabf8a10648de7e1311f0a52bd03faa370bdc5349e",
+    "active_dev_public_qualification_acceptance_receipt_sha256": "81705f10431f3675d2353cf372583619dc20c88292076e53ebb418aee6fd77f6",
+    "fresh_binding_recheck": "PASS"
+  },
+  "boundaries": {
+    "applies_only_to": "Ubuntu 24.04 LTS x86_64/amd64 ext4 public GitHub standard runner active-development configuration",
+    "proves_other_os_support": false,
+    "proves_nine_row_v1_support": false,
+    "vite_adopted": false,
+    "product_build_authorized": false,
+    "product_repository_write_authorized": false,
+    "qg_or_release_authorized": false,
+    "formal_effect_created": false,
+    "paid_provider_used": false,
+    "private_actions_minutes_used": false
+  }
+}
