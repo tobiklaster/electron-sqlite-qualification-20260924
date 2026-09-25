@@ -1,0 +1,163 @@
+{
+  "schema": "ENGOS_PRIMARY_BS01_TOOLCHAIN_SECURITY_REPAIR_EXECUTION_RESULT_V1",
+  "status": "HOLD_SECURITY_PREFLIGHT",
+  "date": "2026-09-25",
+  "authority": {
+    "id": "PRIMARY-BS01-ACTIVE-DEV-TOOLCHAIN-SECURITY-REPAIR-AUTHORITY-001",
+    "revision": 1,
+    "candidate_sha256": "4760915fc047c31b2ef79deeddb696c82bd1c8622bb64be13b9ec5f8edaf089f",
+    "acceptance_receipt_sha256": "90c7247f1a128fa713f137496b4c7ce449cf73dc093f91cb32b87e599a64fdc8",
+    "bound_execution_plan_sha256": "97df6547eaa04f2ad61f2b5aca8c798ab13ff58a6fb707cd731cb118e28df098"
+  },
+  "workflow": {
+    "repository": "tobiklaster/electron-sqlite-qualification-20260924",
+    "workflow": "BS01 toolchain security repair qualification",
+    "path": ".github/workflows/toolchain-security-repair.yml",
+    "run_id": 36076006179,
+    "run_number": 1,
+    "job_id": 107887233245,
+    "head_sha": "61bb66f0580c14efd22839bcb3d7df2c8b05f0e3",
+    "event": "workflow_dispatch",
+    "github_job_conclusion": "success",
+    "semantic_result": "HOLD_SECURITY_PREFLIGHT"
+  },
+  "runner": {
+    "os": "Ubuntu 24.04.5 LTS",
+    "runner_label": "ubuntu-24.04",
+    "architecture": "x86_64",
+    "workspace_filesystem": "ext4",
+    "runner_version": "2.337.0",
+    "image_version": "20260920.314.1",
+    "host_node": "v22.23.2",
+    "host_npm": "11.19.0"
+  },
+  "fresh_resolution": {
+    "lockfile_version": 3,
+    "package_count": 459,
+    "lock_sha256": "11c802a07a7a9dec90c23e487f760b763075c968812d4c8d35229d49c7c29a79",
+    "normalized_graph_sha256": "163568ac53ef1f5c3f2d818caa541c2d55dbfff637125ad2c4779a812a6bc98b",
+    "sri_complete_for_registry_packages": true,
+    "sri_missing_paths": [],
+    "npm_ls_exit_code": 0,
+    "npm_ls_problems": [],
+    "electron_rebuild": {
+      "required": "4.2.0",
+      "resolved": [
+        "4.2.0"
+      ],
+      "resolution_clean": true,
+      "runtime_package_compatibility_tested": false,
+      "reason_not_tested": "SECURITY_PREFLIGHT_HOLD_BLOCKED_Q01_Q03"
+    },
+    "tar": {
+      "tar_6_2_1_absent": true,
+      "resolved_versions": [
+        "7.5.22"
+      ],
+      "registry_integrity": "sha512-MFO/QzvtAOmJbkhOaCTvbGcFN9L9b+JunIsDwaKljSOdcLMea3NJ1k9Usz/rjdfSXTq4dfzfeS7W4p4YOAAHeA==",
+      "tar_advisories_in_exact_npm_audit": 0
+    }
+  },
+  "audit": {
+    "npm_audit_exit_code": 1,
+    "raw_sha256": "fac3c22e12e82c057183478494cca30560131fc677631a128028323ee4c985c3",
+    "normalized_advisory_inventory_sha256": "b560c35809b9c111ecbabdb4d94ec22b04d087fbd6b95a687cff296bd6939a16",
+    "metadata": {
+      "info": 0,
+      "low": 3,
+      "moderate": 0,
+      "high": 16,
+      "critical": 0,
+      "total": 19
+    },
+    "unique_underlying_advisories": [
+      {
+        "package": "extract-zip",
+        "resolved_version": "2.0.1",
+        "severity": "high",
+        "ghsa": "GHSA-jmr9-qjv8-65gv",
+        "title": "extract-zip unvalidated symlink path traversal",
+        "affected_range": "<=2.0.1",
+        "toolchain_path": "@electron-forge/cli@7.11.2 -> @electron-forge/core@7.11.2 -> @electron/packager@18.4.4 -> extract-zip@2.0.1"
+      },
+      {
+        "package": "extract-zip",
+        "resolved_version": "2.0.1",
+        "severity": "high",
+        "ghsa": "GHSA-7pqw-9j4j-h8q3",
+        "title": "extract-zip allows arbitrary file writes through symlink archive entries",
+        "affected_range": "<=2.0.1",
+        "toolchain_path": "@electron-forge/cli@7.11.2 -> @electron-forge/core@7.11.2 -> @electron/packager@18.4.4 -> extract-zip@2.0.1"
+      },
+      {
+        "package": "tmp",
+        "resolved_version": "0.0.33",
+        "severity": "high",
+        "ghsa": "GHSA-ph9p-34f9-6g65",
+        "title": "tmp has Path Traversal via unsanitized prefix/postfix that enables directory escape",
+        "affected_range": "<0.2.6",
+        "toolchain_path": "@electron-forge/cli@7.11.2 -> @inquirer/prompts@6.0.1 -> @inquirer/editor@3.0.1 -> external-editor@3.1.0 -> tmp@0.0.33"
+      },
+      {
+        "package": "tmp",
+        "resolved_version": "0.0.33",
+        "severity": "low",
+        "ghsa": "GHSA-52f5-9888-hmc6",
+        "title": "tmp allows arbitrary temporary file / directory write via symbolic link dir parameter",
+        "affected_range": "<=0.2.3",
+        "toolchain_path": "@electron-forge/cli@7.11.2 -> @inquirer/prompts@6.0.1 -> @inquirer/editor@3.0.1 -> external-editor@3.1.0 -> tmp@0.0.33"
+      }
+    ],
+    "high_package_nodes": [
+      "@electron-forge/cli",
+      "@electron-forge/core",
+      "@electron-forge/core-utils",
+      "@electron-forge/maker-base",
+      "@electron-forge/plugin-base",
+      "@electron-forge/plugin-vite",
+      "@electron-forge/publisher-base",
+      "@electron-forge/shared-types",
+      "@electron-forge/template-base",
+      "@electron-forge/template-vite",
+      "@electron-forge/template-vite-typescript",
+      "@electron-forge/template-webpack",
+      "@electron-forge/template-webpack-typescript",
+      "@electron/packager",
+      "extract-zip",
+      "tmp"
+    ]
+  },
+  "qualification": {
+    "Q01": "NOT_EXECUTED",
+    "Q02": "NOT_EXECUTED",
+    "Q03": "NOT_EXECUTED",
+    "Q04_Q10": "NOT_EXECUTED_OPTIONAL",
+    "reason": "SUPPLY_CHAIN_SECURITY_PASS_GATE_FAILED_BEFORE_REQUALIFICATION"
+  },
+  "evidence_integrity": {
+    "artifact_id": 10840177613,
+    "artifact_outer_sha256": "d8fcc116220039f02062a10491d3af4a31aa359d118da0356b5dc11785a437c6",
+    "inner_result_zip_sha256": "cad4820edb16cabef04e2fb378b4a06dbdb4eebe4ac7e86a18052352c9caa1e3",
+    "manifest_member_count": 19,
+    "manifest_verification": "PASS_19_OF_19",
+    "manifest_sha256": "176dc593ae13214f1d45d750e55534e6027e3c3ea19a58e495961be15948efd2",
+    "security_preflight_sha256": "c78c0a1e7d18e051db62174b9c98b959c1da58e2804175d04ba0f4f975646562",
+    "final_status_sha256": "6bf7dc8ea1279b40f2c0214516e548b975d28a0de09716889370a4cb04508bfb"
+  },
+  "disposition": {
+    "PREBUILD_01": "VALID_MATERIAL_BLOCKER__REMAINS_OPEN",
+    "BS01_LOCAL_DEPENDENCY_READINESS": "HOLD_PENDING_EXACT_TOOLCHAIN_SECURITY_DISPOSITION",
+    "TOOLCHAIN_SECURITY_REPAIR_CANDIDATE": "HOLD",
+    "exact_discriminator": "FORGE_7_11_2_CLOSURE_RETAINS_UNRESOLVED_HIGH_ADVISORIES_AFTER_EXACT_ELECTRON_REBUILD_4_2_0_REPAIR",
+    "automatic_forge_8_alpha": false,
+    "arbitrary_tar_override": false,
+    "additional_dependency_override": false,
+    "security_acceptance_reduced": false,
+    "baseline_adoption": false,
+    "product_repository_write": false,
+    "bs01_build": false,
+    "qg_effect": false,
+    "paid_provider": false,
+    "formal_effect": false
+  }
+}
