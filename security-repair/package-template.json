@@ -19,7 +19,10 @@
   },
   "overrides": {
     "@electron/rebuild": "4.2.0",
-    "@electron/packager": "20.3.0",
+    "@electron/packager": {
+      ".": "18.4.4",
+      "extract-zip": "npm:@electron-internal/extract-zip@1.0.5"
+    },
     "external-editor": {
       "tmp": "0.2.7"
     }
