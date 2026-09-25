@@ -1,0 +1,64 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_TOOLCHAIN_SECURITY_REPAIR_R3_ACCEPTANCE_AND_PRE_EXECUTION_BINDING_V1",
+  "status": "PASS__VALID_R3_USER_ACCEPTANCE__PRE_MUTATION_BINDINGS_PASS",
+  "authority_id": "PRIMARY-BS01-ACTIVE-DEV-TOOLCHAIN-SECURITY-REPAIR-AUTHORITY-001",
+  "revision": 3,
+  "accepted_token": "AKKOORD PRIMARY-BS01-ACTIVE-DEV-TOOLCHAIN-SECURITY-REPAIR-AUTHORITY-001 REVISION-3",
+  "local_acceptance_receipt_sha256": "c2dfbfd23da1393a4804340e53e4f45a9624d5794a6a57792db40e7b1c51c46d",
+  "authority_candidate_sha256": "71fc627a788fe6b79fcec7fe7d9fba4868748f13980c16c632a122c147079a1d",
+  "execution_plan_sha256": "851778eba57012b00532db93b80b02532eb67190cb2b4d0213dbac0dc9043f14",
+  "binding_template_sha256": "32a13e4bda2a257b744ddf09dc111d51f7bacaff674008d2d73535666fad54e6",
+  "orion_bc": "PASS_UNCHANGED",
+  "fresh_pre_mutation_binding": {
+    "result": "PASS",
+    "current_state_id": "ENGOS-PRIMARY-DYNAMIC-R0012-cf861aab7e444965",
+    "current_content_hash": "cf861aab7e4449655a100fcec2937cd055811ac36696c3042a9b8caf729c7130",
+    "current_state_file_sha256": "8d267202cf0e5f855a0b436256d01ba643cd22b150afd1b57b45ec09556fe833",
+    "frozen_wrapper_sha256": "29deda44b7612cc44153a9154f9c0118f9903be4f8e740368f3f4cfd3e5f92dd",
+    "qualification_r2_candidate_sha256": "708ded18f10107bc1a611ab48ebf5f03afa646936d3f99879d20c6841329c751",
+    "qualification_r2_acceptance_sha256": "458d8d50177ccea0d26bb28e784ee0eb9fe929ae505aa4d59aa758f26f073e58",
+    "active_dev_authority_sha256": "efb42e8214869c59982ebedabf8a10648de7e1311f0a52bd03faa370bdc5349e",
+    "active_dev_acceptance_sha256": "81705f10431f3675d2353cf372583619dc20c88292076e53ebb418aee6fd77f6",
+    "security_repair_r1_acceptance_sha256": "90c7247f1a128fa713f137496b4c7ce449cf73dc093f91cb32b87e599a64fdc8",
+    "run1_hold_receipt_sha256": "3180a7416fc78565199dd8643dcc895363e585efe5a758ec7630d5a712779f84",
+    "repository": "tobiklaster/electron-sqlite-qualification-20260924",
+    "visibility": "PUBLIC",
+    "expected_preparation_parent": "3f3c96a7fcc03044654958c697635cc73121d838",
+    "actual_main_before_first_r3_mutation": "3f3c96a7fcc03044654958c697635cc73121d838"
+  },
+  "public_synthetic_precommit_classification": {
+    "result": "PASS",
+    "unknown_or_private": "NONE",
+    "changed_files": [
+      {
+        "path": "security-repair/package-template.json",
+        "classification": "PUBLIC_SYNTHETIC_QUALIFICATION_ONLY",
+        "content_class": "public package/version declarations"
+      },
+      {
+        "path": "security-repair/analyze-security.cjs",
+        "classification": "PUBLIC_SYNTHETIC_QUALIFICATION_ONLY",
+        "content_class": "synthetic qualification code"
+      },
+      {
+        "path": "security-repair/run-security-repair.sh",
+        "classification": "PUBLIC_SYNTHETIC_QUALIFICATION_ONLY",
+        "content_class": "synthetic qualification code"
+      },
+      {
+        "path": "receipts/TOOLCHAIN_SECURITY_REPAIR_R3_ACCEPTANCE_AND_PRE_EXECUTION_BINDING.json",
+        "classification": "PUBLIC_SYNTHETIC_QUALIFICATION_ONLY",
+        "content_class": "machine-readable qualification receipt"
+      }
+    ]
+  },
+  "authority_effect": "ONLY_BOUNDED_PUBLIC_SYNTHETIC_TOOLCHAIN_SECURITY_QUALIFICATION",
+  "product_repository_access_or_write": false,
+  "bs01_build": false,
+  "forge8_adoption": false,
+  "vite_baseline_adoption": false,
+  "baseline_adoption": false,
+  "qg_adoption_release": false,
+  "paid_execution": false,
+  "formal_effect": false
+}
