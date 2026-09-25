@@ -1,0 +1,139 @@
+{
+  "schema": "ENGOS_PRIMARY_BS01_TOOLCHAIN_SECURITY_REPAIR_R3_RUN3_HOLD_RECEIPT_V1",
+  "status": "HOLD_COMPATIBILITY__FORGE_7_11_2_PACKAGER_20_3_0_PACKAGE_INCOMPATIBILITY",
+  "date": "2026-09-25",
+  "authority": {
+    "id": "PRIMARY-BS01-ACTIVE-DEV-TOOLCHAIN-SECURITY-REPAIR-AUTHORITY-001",
+    "revision": 3,
+    "candidate_sha256": "71fc627a788fe6b79fcec7fe7d9fba4868748f13980c16c632a122c147079a1d",
+    "execution_plan_sha256": "851778eba57012b00532db93b80b02532eb67190cb2b4d0213dbac0dc9043f14",
+    "user_acceptance_receipt_sha256": "c2dfbfd23da1393a4804340e53e4f45a9624d5794a6a57792db40e7b1c51c46d"
+  },
+  "workflow": {
+    "repository": "tobiklaster/electron-sqlite-qualification-20260924",
+    "visibility": "PUBLIC",
+    "workflow": "BS01 toolchain security repair qualification",
+    "path": ".github/workflows/toolchain-security-repair.yml",
+    "run_id": 36138464195,
+    "run_number": 3,
+    "job_id": 108082163019,
+    "event": "workflow_dispatch",
+    "head_sha": "b3e116c5e3a8ed3037f3e9ec422c495950af839b",
+    "github_job_conclusion": "success",
+    "semantic_result": "HOLD_Q01_Q03_REQUALIFICATION",
+    "failure_stage": "forge_package"
+  },
+  "runner": {
+    "os": "Ubuntu 24.04.5 LTS",
+    "runner_label": "ubuntu-24.04",
+    "architecture": "x86_64",
+    "workspace_filesystem": "ext4",
+    "runner_version": "2.337.0",
+    "image_version": "20260920.314.1",
+    "host_node": "v22.23.2",
+    "host_npm": "11.19.0"
+  },
+  "security_preflight": {
+    "result": "PASS",
+    "lockfile_version": 3,
+    "package_count": 413,
+    "lock_sha256": "334388b519b84db194cf08479ba038d6ea324607f7c162522616b321740e09e4",
+    "normalized_graph_sha256": "50ee99b271cf912a13b8a2e01151a173cb2d6aabf7b7da4b8857c48c50551cdf",
+    "npm_audit_json_sha256": "b8809f6c38b54b9554f6281a957fd3a92e52de48503287a613279fe5041e2458",
+    "normalized_advisory_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "high": 0,
+    "critical": 0,
+    "total_advisories": 0,
+    "sri_complete": true,
+    "npm_ls_full_clean": true,
+    "npm_ls_focused_clean": true,
+    "invalid_or_extraneous": false,
+    "electron_rebuild": "4.2.0",
+    "electron_packager": "20.3.0",
+    "tar_versions": [
+      "7.5.22"
+    ],
+    "extract_zip_versions": [],
+    "replacement_extractor": {
+      "name": "@electron-internal/extract-zip",
+      "version": "1.0.5",
+      "dependency_path": "@electron/packager@20.3.0 -> @electron-internal/extract-zip@1.0.5"
+    },
+    "external_editor_tmp": "0.2.7",
+    "packager_engine_requirement": ">= 22.12.0",
+    "packager_engine_satisfied": true,
+    "forge_resolved_packager": "20.3.0"
+  },
+  "compatibility_and_functional_evidence": {
+    "forge_config_load": "PASS",
+    "electron_rebuild_functional": {
+      "result": "PASS",
+      "electron_rebuild": "4.2.0",
+      "target_electron": "44.4.4",
+      "log_sha256": "e327f3f386d1e62d0832199f0c96042a9fc60b6ecafc41c13b3b5f448c5193d3",
+      "evidence_sha256": "fa76373e0632925b61a28b8005b9458312e37ade54355428d6f497738d1a8880",
+      "linux_x64_native_sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    "forge_start": {
+      "result": "PASS",
+      "log_sha256": "3e6ca1b0da8f6032ea59e4107082116c3d792c967dc739d1285df2a0e2023c34",
+      "dev_runtime_sha256": "348631c95803eda4c87b20c4cf0032634663b599a1f27933449dce394355e68a",
+      "electron": "44.4.4",
+      "embedded_node": "24.21.0",
+      "chromium": "152.0.7977.130",
+      "sqlite": "3.53.4",
+      "native_binding_loaded": true,
+      "renderer_ready": true
+    },
+    "forge_package": {
+      "result": "FAIL_HOLD",
+      "log_sha256": "a59667ef7f35d02fc08d582b4636fa34ef18db1b269a14acf4183a148ce4d8e6",
+      "last_successful_phase": "Finalizing package",
+      "error_type": "TypeError",
+      "error": "done is not a function",
+      "source_location": "@electron-forge/core/dist/api/package.js:76:13",
+      "observed_combination": "Forge 7.11.2 + @electron/packager 20.3.0",
+      "disposition": "EXACT_RUNTIME_PACKAGE_INCOMPATIBILITY__HOLD"
+    }
+  },
+  "q01_q03": {
+    "aggregate": "HOLD_Q01_Q03_REQUALIFICATION",
+    "q01_q03_receipt_emitted": false,
+    "Q01": "NOT_FORMALLY_PASSED__SECURITY_AND_LOCK_PRECONDITIONS_PASS_BUT_AGGREGATE_RECEIPT_NOT_EMITTED",
+    "Q02": "HOLD_FORGE_PACKAGE_INCOMPATIBILITY",
+    "Q03": "NOT_COMPLETED__DIRECT_REBUILD_AND_DEV_NATIVE_LOAD_PASS__PACKAGED_NATIVE_AND_MISSING_BINDING_NEGATIVE_NOT_REACHED",
+    "packaged_launch": "NOT_EXECUTED",
+    "packaged_native_include_load": "NOT_EXECUTED",
+    "missing_binding_fail_closed": "NOT_EXECUTED"
+  },
+  "evidence_integrity": {
+    "artifact_id": 10865359927,
+    "artifact_outer_sha256": "f03f1742fc7b3f6bb6f57a843b26b4eab0a622fec3df825d034a4f3e8dc531fd",
+    "artifact_outer_bytes": 238761,
+    "inner_result_zip_sha256": "67364bd18d0b4563de12e27b9c26bee4ded53ef294155ac69414f7983cfeb550",
+    "inner_result_zip_bytes": 120197,
+    "manifest_member_count": 29,
+    "manifest_verification": "PASS_29_OF_29",
+    "manifest_sha256": "cf68406c9c29a13e2627d11ed46e9ef5b4d0b7165d2f89e7dbabcd9cb79d087f",
+    "security_preflight_sha256": "b5c4b4c03f15d01328aa54a475fb1dde5c728ff2fe60410e4612f02f04f28c64",
+    "compatibility_preflight_sha256": "f210b9cfeef66d63900625e7a8f56eab067e211616e3c3c683ba3355d22e3703",
+    "final_status_sha256": "ceb71839dc4fa21415910bbe454ee5e0b85b60884b3eeb900e935f6b43b81e72"
+  },
+  "exact_discriminator": "FORGE_7_11_2_WITH_OVERRIDDEN_ELECTRON_PACKAGER_20_3_0_FAILS_DURING_FORGE_PACKAGE_FINALIZATION__TYPEERROR_DONE_IS_NOT_A_FUNCTION",
+  "disposition": {
+    "TOOLCHAIN_SECURITY_REPAIR_R3": "HOLD_COMPATIBILITY",
+    "PREBUILD_01": "REMAINS_OPEN",
+    "security_root_causes_from_run1": "CLOSED_IN_R3_LOCK__HIGH_0_CRITICAL_0",
+    "forge_8_fallback": false,
+    "alternative_packager_or_dependency_substitution": false,
+    "security_gate_reduced": false,
+    "automatic_baseline_adoption": false,
+    "product_repository_access_or_write": false,
+    "bs01_build": false,
+    "qg_effect": false,
+    "paid_provider": false,
+    "formal_effect": false
+  },
+  "publication_classification": "PUBLIC_SYNTHETIC_QUALIFICATION_ONLY",
+  "next_boundary": "RETURN_COMPLETE_R3_HOLD_EVIDENCE_TO_ORION_BC_FOR_TARGETED_PREBUILD_01_REREVIEW__NO_AUTOMATIC_ALTERNATIVE_SELECTION"
+}
