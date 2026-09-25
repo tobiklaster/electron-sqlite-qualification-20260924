@@ -1,0 +1,78 @@
+{
+  "schema": "ENGOS_PUBLIC_SYNTHETIC_TOOLCHAIN_SECURITY_REPAIR_R3_RUN2_HOLD_AND_HARNESS_REPAIR_V1",
+  "status": "HOLD_Q01_Q03_REQUALIFICATION__HARNESS_INTROSPECTION_REPAIRED__RERUN_REQUIRED",
+  "date": "2026-09-25",
+  "authority": {
+    "id": "PRIMARY-BS01-ACTIVE-DEV-TOOLCHAIN-SECURITY-REPAIR-AUTHORITY-001",
+    "revision": 3,
+    "candidate_sha256": "71fc627a788fe6b79fcec7fe7d9fba4868748f13980c16c632a122c147079a1d",
+    "execution_plan_sha256": "851778eba57012b00532db93b80b02532eb67190cb2b4d0213dbac0dc9043f14",
+    "user_acceptance_receipt_sha256": "c2dfbfd23da1393a4804340e53e4f45a9624d5794a6a57792db40e7b1c51c46d"
+  },
+  "run": {
+    "workflow_run_id": 36137596818,
+    "run_number": 2,
+    "job_id": 108079323009,
+    "workflow": ".github/workflows/toolchain-security-repair.yml",
+    "head_sha": "8a03ad5fe904c71439c3fb372c7459561ac37be2",
+    "github_job_conclusion": "success",
+    "semantic_result": "HOLD_Q01_Q03_REQUALIFICATION",
+    "failure_stage": "rebuild_resolution",
+    "artifact_id": 10865158484,
+    "artifact_outer_sha256": "87242e210a708071e39c16903d5132639de780104ba1cea846aab7ce7996f70e",
+    "inner_result_zip_sha256": "f0783295ee860ec4983c53d2999519e37c669e98a243fb7d1bb14ed680f188d0",
+    "manifest_verification": "PASS_24_OF_24"
+  },
+  "security_preflight": {
+    "result": "PASS",
+    "lock_sha256": "334388b519b84db194cf08479ba038d6ea324607f7c162522616b321740e09e4",
+    "normalized_graph_sha256": "50ee99b271cf912a13b8a2e01151a173cb2d6aabf7b7da4b8857c48c50551cdf",
+    "npm_audit_json_sha256": "b8809f6c38b54b9554f6281a957fd3a92e52de48503287a613279fe5041e2458",
+    "advisory_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "high": 0,
+    "critical": 0,
+    "electron_rebuild": "4.2.0",
+    "electron_packager": "20.3.0",
+    "tar_versions": [
+      "7.5.22"
+    ],
+    "extract_zip_versions": [],
+    "replacement_extractor": {
+      "name": "@electron-internal/extract-zip",
+      "version": "1.0.5",
+      "dependency_path": "@electron/packager@20.3.0 -> @electron-internal/extract-zip@1.0.5"
+    },
+    "external_editor_tmp": "0.2.7",
+    "engine_requirement": ">= 22.12.0",
+    "host_node": "v22.23.2",
+    "engine_satisfied": true,
+    "forge_resolved_packager": "20.3.0",
+    "npm_ls_clean": true,
+    "sri_complete": true
+  },
+  "exact_discriminator": {
+    "class": "SYNTHETIC_HARNESS_INTROSPECTION_ERROR",
+    "code": "ERR_PACKAGE_PATH_NOT_EXPORTED",
+    "failing_expression": "require('@electron/rebuild/package.json').version",
+    "meaning": "@electron/rebuild@4.2.0 does not export the ./package.json subpath. This failure occurred before the direct functional rebuild probe and does not establish Forge, Packager, rebuild, Q01, Q02, or Q03 incompatibility."
+  },
+  "bounded_repair": {
+    "path": "security-repair/run-security-repair.sh",
+    "commit": "cbfbb3180a7b2a9e7600d6540aaf7955a66acc99",
+    "content_blob_sha": "b646bbd1818dc38f928bc827ad6c7fb390b6a411",
+    "effect": "Resolve the public @electron/rebuild module entry with require.resolve(), walk to its package root, read its package.json there, and preserve the exact required installed version check == 4.2.0.",
+    "security_gate_changed": false,
+    "dependency_versions_changed": false,
+    "q01_q03_acceptance_semantics_changed": false,
+    "forge_packager_compatibility_semantics_changed": false
+  },
+  "publication_classification": "PUBLIC_SYNTHETIC_QUALIFICATION_ONLY",
+  "rerun_required": true,
+  "q01_q03": "NOT_PASSED",
+  "baseline_adoption": false,
+  "product_repository_write": false,
+  "bs01_build": false,
+  "qg_effect": false,
+  "paid_provider": false,
+  "formal_effect": false
+}
