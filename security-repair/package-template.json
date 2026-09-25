@@ -18,6 +18,10 @@
     "typescript": "7.0.2"
   },
   "overrides": {
-    "@electron/rebuild": "4.2.0"
+    "@electron/rebuild": "4.2.0",
+    "@electron/packager": "20.3.0",
+    "external-editor": {
+      "tmp": "0.2.7"
+    }
   }
 }
