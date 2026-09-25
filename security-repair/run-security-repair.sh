@@ -279,7 +279,25 @@ QUAL_STAGE="not_started"
 run_q01_q03() {
   QUAL_STAGE="rebuild_resolution"
   local rebuild
-  rebuild="$(node -p "require('@electron/rebuild/package.json').version")" || return 1
+  # @electron/rebuild@4.2.0 does not export ./package.json. Resolve the
+  # public package entry first, then walk to its package root without
+  # weakening the exact installed-version requirement.
+  rebuild="$(node - <<'NODE'
+const fs=require('fs'),path=require('path');
+let d=path.dirname(require.resolve('@electron/rebuild'));
+while(true){
+  const p=path.join(d,'package.json');
+  if(fs.existsSync(p)){
+    const j=JSON.parse(fs.readFileSync(p,'utf8'));
+    if(j.name==='@electron/rebuild'){process.stdout.write(j.version);process.exit(0);}
+  }
+  const up=path.dirname(d);
+  if(up===d)break;
+  d=up;
+}
+process.exit(42);
+NODE
+)" || return 1
   [[ "$rebuild" == "4.2.0" ]] || return 1
   node -e "const c=require('$RESULTS/compatibility-preflight.json');if(c.forge_packager?.version!=='20.3.0'||c.packager_engine?.satisfied!==true||c.external_editor_tmp?.version!=='0.2.7')process.exit(1)" || return 1
 
