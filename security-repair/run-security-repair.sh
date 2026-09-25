@@ -51,18 +51,58 @@ print('SECURITY_REPAIR_RESULT_ZIP_SHA256='+hashlib.sha256(zip_path.read_bytes())
 PY
 }
 
+emit_q01_q03_status() {
+  node - "$RESULTS/q01-q03.json" <<'NODE'
+const fs=require('fs'),path=require('path');
+const outPath=process.argv[2],dir=path.dirname(outPath);
+const read=(name)=>{const p=path.join(dir,name);if(!fs.existsSync(p))return null;try{return JSON.parse(fs.readFileSync(p,'utf8'))}catch{return null}};
+const exists=(name)=>fs.existsSync(path.join(dir,name));
+const sec=read('security-preflight.json');
+const extractor=read('extractor-compatibility.json');
+const direct=read('direct-rebuild-evidence.json');
+const dev=read('dev-runtime.json');
+const packaged=read('packaged-runtime.json');
+const neg=read('active-native-negative.json');
+const restored=read('post-restore-runtime.json');
+
+const q01=(sec?.result==='PASS'&&extractor?.result==='PASS')?'PASS':'HOLD';
+const q02=(q01==='PASS'&&dev?.result==='PASS'&&packaged?.result==='PASS'&&exists('forge-package.log'))?'PASS':'HOLD';
+const restoreIdentityPass=
+  restored?.result==='PASS' &&
+  restored?.native_binding_loaded===true &&
+  restored?.sqlite_version==='3.53.4' &&
+  restored?.versions?.electron==='44.4.4' &&
+  restored?.versions?.node==='24.21.0' &&
+  restored?.versions?.chrome==='152.0.7977.130';
+const q03=(q02==='PASS'&&direct?.result==='PASS'&&neg?.result==='PASS'&&restoreIdentityPass)?'PASS':'HOLD';
+const aggregate=(q01==='PASS'&&q02==='PASS'&&q03==='PASS')?'PASS':'HOLD';
+
+fs.writeFileSync(outPath,JSON.stringify({
+  result:aggregate,
+  Q01_LOCK_INTEGRITY:{result:q01},
+  Q02_PACKAGE_LAUNCH:{result:q02},
+  Q03_NATIVE_BINDING:{result:q03},
+  independent_gate_statuses:true,
+  semantic_pass_requires_all_three_pass:true
+},null,2)+'\n');
+NODE
+}
+
 semantic_hold() {
   local semantic="$1" stage="$2" rc="${3:-42}"
-  node - "$RESULTS/final-status.json" "$semantic" "$stage" "$rc" <<'NODE'
+  emit_q01_q03_status
+  node - "$RESULTS/final-status.json" "$RESULTS/q01-q03.json" "$semantic" "$stage" "$rc" <<'NODE'
 const fs=require('fs');
-fs.writeFileSync(process.argv[2],JSON.stringify({
-  SEMANTIC_QUALIFICATION_RESULT:process.argv[3],
-  result:process.argv[3],
-  failure_stage:process.argv[4],
-  exit_code:Number(process.argv[5]),
-  Q01:'NOT_PASSED',
-  Q02:'NOT_PASSED',
-  Q03:'NOT_PASSED',
+const [outPath,qPath,semantic,stage,rc]=process.argv.slice(2);
+const q=JSON.parse(fs.readFileSync(qPath,'utf8'));
+fs.writeFileSync(outPath,JSON.stringify({
+  SEMANTIC_QUALIFICATION_RESULT:semantic,
+  result:semantic,
+  failure_stage:stage,
+  exit_code:Number(rc),
+  Q01:q.Q01_LOCK_INTEGRITY.result,
+  Q02:q.Q02_PACKAGE_LAUNCH.result,
+  Q03:q.Q03_NATIVE_BINDING.result,
   github_job_conclusion_authoritative:false,
   baseline_adoption:false,
   product_repository_write:false,
@@ -309,31 +349,219 @@ if(r.versions?.electron!=='44.4.4'||r.versions?.node!=='24.21.0'||r.versions?.ch
 NODE
 
 QUAL_STAGE="missing_binding_negative"
-native="" ; native_sha="" ; missing_rc=0 ; idx=0
-for cand in "${native_candidates[@]}"; do
-  idx=$((idx+1))
-  cand_sha="$(sha256sum "$cand" | awk '{print $1}')"
-  mv "$cand" "$cand.missing"
-  set +e
-  QUAL_PHASE="forge7-recovery-missing-binding-$idx" QUAL_RUNTIME_RECEIPT="$RESULTS/missing-binding-runtime-$idx.json" timeout 60s xvfb-run -a "$appbin" > "$RESULTS/missing-binding-$idx.log" 2>&1
-  rc=$?
-  set -e
-  mv "$cand.missing" "$cand"
-  if [[ "$rc" -ne 0 ]] && grep -Eqi 'better[_-]?sqlite|Could not locate the bindings|bindings file|\.node' "$RESULTS/missing-binding-$idx.log"; then
-    native="$cand";native_sha="$cand_sha";missing_rc="$rc"
-    cp "$RESULTS/missing-binding-$idx.log" "$RESULTS/missing-binding-active.log"
-    [[ -f "$RESULTS/missing-binding-runtime-$idx.json" ]] && cp "$RESULTS/missing-binding-runtime-$idx.json" "$RESULTS/missing-binding-active-runtime.json" || true
-    break
-  fi
-done
-[[ -n "$native" && "$missing_rc" -ne 0 ]] || semantic_hold "HOLD_Q01_Q03_REQUALIFICATION" "$QUAL_STAGE" 42
+native_rel="resources/app.asar.unpacked/node_modules/better-sqlite3/prebuilds/linux-x64.node"
+native="$appdir/$native_rel"
+negative_phase="forge7-recovery-missing-binding-linux-x64"
+negative_log="$RESULTS/missing-binding-active.log"
+negative_receipt="$RESULTS/missing-binding-active-runtime.json"
+attempt_evidence="$RESULTS/missing-binding-attempt.json"
+post_restore_log="$RESULTS/post-restore-launch.log"
+post_restore_receipt="$RESULTS/post-restore-runtime.json"
 
-node - "$RESULTS/active-native-negative.json" "$appdir" "$native" "$native_sha" "$missing_rc" "$RESULTS/missing-binding-active.log" <<'NODE'
-const fs=require('fs'),path=require('path'),crypto=require('crypto');const [out,appdir,native,nativeSha,rc,log]=process.argv.slice(2);
-const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
-fs.writeFileSync(out,JSON.stringify({result:'PASS',exact_active_native_relative_path:path.relative(appdir,native),exact_active_native_sha256:nativeSha,missing_binding_exit_code:Number(rc),
-missing_binding_fails_closed:Number(rc)!==0,failure_log_sha256:sha(fs.readFileSync(log))},null,2)+'\n');
+[[ -f "$native" ]] || semantic_hold "HOLD_Q01_Q03_REQUALIFICATION" "active_linux_x64_path_drift" 42
+native_sha="$(sha256sum "$native" | awk '{print $1}')"
+
+set +e
+node - "$RESULTS/active-native-pre-removal.json" "$appdir" "$native" "$native_sha" "$RESULTS/packaged-runtime.json" <<'NODE'
+const fs=require('fs'),path=require('path');
+const [out,appdir,native,nativeSha,packagedReceipt]=process.argv.slice(2);
+const pre=JSON.parse(fs.readFileSync(packagedReceipt,'utf8'));
+const ok=
+  fs.existsSync(native) &&
+  pre.result==='PASS' &&
+  pre.native_binding_loaded===true &&
+  pre.sqlite_version==='3.53.4' &&
+  pre.versions?.electron==='44.4.4' &&
+  pre.versions?.node==='24.21.0' &&
+  pre.versions?.chrome==='152.0.7977.130';
+fs.writeFileSync(out,JSON.stringify({
+  result:ok?'PASS':'HOLD',
+  exact_active_native_relative_path:path.relative(appdir,native),
+  exact_active_native_absolute_path:native,
+  exact_active_native_sha256:nativeSha,
+  file_exists_before_removal:fs.existsSync(native),
+  normal_packaged_launch_precondition:pre
+},null,2)+'\n');
+process.exit(ok?0:42);
 NODE
+PRE_REMOVAL_RC=$?
+set -e
+if [[ "$PRE_REMOVAL_RC" -ne 0 ]]; then
+  semantic_hold "HOLD_Q01_Q03_REQUALIFICATION" "active_linux_x64_pre_removal_precondition" "$PRE_REMOVAL_RC"
+fi
+
+set +e
+mv "$native" "$native.missing"
+REMOVE_RC=$?
+set -e
+REMOVE_TARGET_ABSENT=false
+REMOVE_BACKUP_PRESENT=false
+if [[ ! -e "$native" ]]; then REMOVE_TARGET_ABSENT=true; fi
+if [[ -f "$native.missing" ]]; then REMOVE_BACKUP_PRESENT=true; fi
+
+node - "$RESULTS/active-native-removal.json" "$appdir" "$native" "$native_sha" "$REMOVE_RC" "$REMOVE_TARGET_ABSENT" "$REMOVE_BACKUP_PRESENT" <<'NODE'
+const fs=require('fs'),path=require('path');
+const [out,appdir,native,nativeSha,rc,targetAbsent,backupPresent]=process.argv.slice(2);
+fs.writeFileSync(out,JSON.stringify({
+  exact_active_native_relative_path:path.relative(appdir,native),
+  exact_active_native_absolute_path:native,
+  exact_active_native_pre_removal_sha256:nativeSha,
+  removal_raw_exit_code:Number(rc),
+  target_absent_after_removal:targetAbsent==='true',
+  backup_present_after_removal:backupPresent==='true',
+  removal_result:Number(rc)===0&&targetAbsent==='true'&&backupPresent==='true'?'PASS':'HOLD'
+},null,2)+'\n');
+NODE
+
+if [[ "$REMOVE_RC" -ne 0 || "$REMOVE_TARGET_ABSENT" != "true" || "$REMOVE_BACKUP_PRESENT" != "true" ]]; then
+  REMOVE_HOLD_RC="$REMOVE_RC"
+  if [[ "$REMOVE_HOLD_RC" -eq 0 ]]; then REMOVE_HOLD_RC=42; fi
+  if [[ -f "$native.missing" && ! -e "$native" ]]; then
+    set +e
+    mv "$native.missing" "$native"
+    REMOVE_FAILURE_RESTORE_RC=$?
+    set -e
+    node - "$RESULTS/active-native-removal-failure-restore.json" "$REMOVE_FAILURE_RESTORE_RC" "$native" "$native_sha" <<'NODE'
+const fs=require('fs'),crypto=require('crypto');
+const [out,rc,native,expectedSha]=process.argv.slice(2);
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const exists=fs.existsSync(native);
+const actualSha=exists?sha(fs.readFileSync(native)):null;
+fs.writeFileSync(out,JSON.stringify({
+  restore_raw_exit_code:Number(rc),
+  restored_file_exists:exists,
+  restored_sha256:actualSha,
+  restored_sha256_matches_pre_removal:actualSha===expectedSha
+},null,2)+'\n');
+NODE
+  fi
+  semantic_hold "HOLD_Q01_Q03_REQUALIFICATION" "active_linux_x64_removal" "$REMOVE_HOLD_RC"
+fi
+
+set +e
+QUAL_PHASE="$negative_phase" QUAL_RUNTIME_RECEIPT="$negative_receipt" timeout 60s xvfb-run -a "$appbin" > "$negative_log" 2>&1
+missing_rc=$?
+set -e
+missing_timed_out=false
+[[ "$missing_rc" -eq 124 ]] && missing_timed_out=true
+
+# Persist attempt evidence while the exact target is still absent.
+node - "$attempt_evidence" "$appdir" "$native" "$native_sha" "$missing_rc" "$missing_timed_out" "$negative_phase" "$negative_log" "$negative_receipt" <<'NODE'
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const [out,appdir,native,nativeSha,rc,timedOut,phase,log,receiptPath]=process.argv.slice(2);
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const receiptExists=fs.existsSync(receiptPath);
+const receiptBytes=receiptExists?fs.readFileSync(receiptPath):null;
+let receipt=null;
+if(receiptBytes){try{receipt=JSON.parse(receiptBytes.toString('utf8'))}catch{}}
+fs.writeFileSync(out,JSON.stringify({
+  candidate_relative_path:path.relative(appdir,native),
+  candidate_absolute_path:native,
+  candidate_pre_removal_sha256:nativeSha,
+  exact_target_removed:!fs.existsSync(native),
+  raw_exit_code:Number(rc),
+  timed_out:timedOut==='true',
+  stdout_stderr_log_path:log,
+  stdout_stderr_log_sha256:sha(fs.readFileSync(log)),
+  runtime_receipt_path:receiptPath,
+  runtime_receipt_exists:receiptExists,
+  runtime_receipt_sha256:receiptBytes?sha(receiptBytes):null,
+  runtime_receipt:receipt,
+  expected_phase:phase
+},null,2)+'\n');
+NODE
+
+set +e
+mv "$native.missing" "$native"
+restore_rc=$?
+set -e
+restored_sha=""
+if [[ "$restore_rc" -eq 0 && -f "$native" ]]; then
+  restored_sha="$(sha256sum "$native" | awk '{print $1}')"
+fi
+
+set +e
+QUAL_PHASE="forge7-recovery-post-restore" QUAL_RUNTIME_RECEIPT="$post_restore_receipt" timeout 60s xvfb-run -a "$appbin" > "$post_restore_log" 2>&1
+post_restore_rc=$?
+set -e
+
+set +e
+node - "$RESULTS/active-native-negative.json" "$attempt_evidence" "$RESULTS/active-native-pre-removal.json" "$restored_sha" "$restore_rc" "$post_restore_rc" "$post_restore_log" "$post_restore_receipt" <<'NODE'
+const fs=require('fs'),crypto=require('crypto');
+const [out,attemptPath,prePath,restoredSha,restoreRc,postRc,postLog,postReceiptPath]=process.argv.slice(2);
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const attempt=JSON.parse(fs.readFileSync(attemptPath,'utf8'));
+const pre=JSON.parse(fs.readFileSync(prePath,'utf8'));
+const receipt=attempt.runtime_receipt;
+const error=String(receipt?.error||'');
+const exactPathMention=
+  error.includes(attempt.candidate_absolute_path) ||
+  error.includes(attempt.candidate_relative_path);
+const unambiguousNativeLoaderFailure=
+  /linux-x64\.node|better-sqlite3/i.test(error) &&
+  /dlopen|cannot open shared object file|bindings?|\.node/i.test(error);
+const logText=fs.readFileSync(attempt.stdout_stderr_log_path,'utf8');
+const diagnosticLogRegexMatch=/better[_-]?sqlite|Could not locate the bindings|bindings file|\.node/i.test(logText);
+
+let post=null,postReceiptSha=null;
+if(fs.existsSync(postReceiptPath)){
+  const b=fs.readFileSync(postReceiptPath);
+  postReceiptSha=sha(b);
+  try{post=JSON.parse(b.toString('utf8'))}catch{}
+}
+const restoredBytesMatch=
+  Number(restoreRc)===0 &&
+  Boolean(restoredSha) &&
+  restoredSha===attempt.candidate_pre_removal_sha256;
+const negativeCausalPass=
+  pre.result==='PASS' &&
+  attempt.exact_target_removed===true &&
+  attempt.raw_exit_code!==0 &&
+  attempt.timed_out===false &&
+  attempt.runtime_receipt_exists===true &&
+  receipt?.result==='FAIL' &&
+  receipt?.phase===attempt.expected_phase &&
+  (exactPathMention||unambiguousNativeLoaderFailure);
+const postRestorePass=
+  Number(postRc)===0 &&
+  post?.result==='PASS' &&
+  post?.native_binding_loaded===true &&
+  post?.sqlite_version==='3.53.4' &&
+  post?.versions?.electron==='44.4.4' &&
+  post?.versions?.node==='24.21.0' &&
+  post?.versions?.chrome==='152.0.7977.130';
+
+const result=(negativeCausalPass&&restoredBytesMatch&&postRestorePass)?'PASS':'HOLD';
+fs.writeFileSync(out,JSON.stringify({
+  result,
+  exact_active_native_relative_path:attempt.candidate_relative_path,
+  exact_active_native_sha256:attempt.candidate_pre_removal_sha256,
+  missing_binding_exit_code:attempt.raw_exit_code,
+  missing_binding_fails_closed:negativeCausalPass,
+  timeout_state:attempt.timed_out,
+  authoritative_runtime_receipt_sha256:attempt.runtime_receipt_sha256,
+  authoritative_runtime_receipt_result:receipt?.result??null,
+  authoritative_runtime_receipt_phase:receipt?.phase??null,
+  authoritative_runtime_receipt_error:receipt?.error??null,
+  exact_path_or_unambiguous_loader_failure:exactPathMention||unambiguousNativeLoaderFailure,
+  diagnostic_stdout_stderr_regex_match:diagnosticLogRegexMatch,
+  diagnostic_stdout_stderr_regex_is_mandatory:false,
+  restored_bytes_sha256:restoredSha||null,
+  restored_bytes_match_pre_removal_sha256:restoredBytesMatch,
+  post_restore_exit_code:Number(postRc),
+  post_restore_log_sha256:sha(fs.readFileSync(postLog)),
+  post_restore_runtime_receipt_sha256:postReceiptSha,
+  post_restore_runtime_receipt:post,
+  post_restore_pass:postRestorePass,
+  causal_evidence_complete:result==='PASS'
+},null,2)+'\n');
+process.exit(result==='PASS'?0:42);
+NODE
+NEGATIVE_RC=$?
+set -e
+if [[ "$NEGATIVE_RC" -ne 0 ]]; then
+  semantic_hold "HOLD_Q01_Q03_REQUALIFICATION" "$QUAL_STAGE" "$NEGATIVE_RC"
+fi
 
 lock_sha="$(node -p "require('$RESULTS/security-preflight.json').lock.raw_sha256")"
 graph_sha="$(node -p "require('$RESULTS/security-preflight.json').lock.normalized_graph_sha256")"
